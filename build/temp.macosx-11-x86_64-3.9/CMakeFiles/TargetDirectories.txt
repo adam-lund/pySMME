@@ -1,0 +1,7 @@
+/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/CMakeFiles/_smme.dir
+/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/CMakeFiles/edit_cache.dir
+/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/CMakeFiles/rebuild_cache.dir
+/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/extern/carma/CMakeFiles/edit_cache.dir
+/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/extern/carma/CMakeFiles/rebuild_cache.dir
+/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/extern/carma/extern/pybind11/CMakeFiles/edit_cache.dir
+/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/extern/carma/extern/pybind11/CMakeFiles/rebuild_cache.dir
