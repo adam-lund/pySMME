@@ -1,0 +1,44 @@
+\begin{sphinxtheindex}
+\let\bigletter\sphinxstyleindexlettergroup
+\let\spxpagem \sphinxstyleindexpagemain
+\let\spxentry \sphinxstyleindexentry
+\let\spxextra \sphinxstyleindexextra
+
+  \bigletter H
+  \item \spxentry{H()}\spxextra{in module pysmme.transforms}, \hyperpage{8}
+
+  \indexspace
+  \bigletter I
+  \item \spxentry{iwt()}\spxextra{in module pysmme.transforms}, \hyperpage{9}
+
+  \indexspace
+  \bigletter M
+  \item \spxentry{module}
+    \subitem \spxentry{pysmme}, \hyperpage{10}
+    \subitem \spxentry{pysmme.tools}, \hyperpage{1}
+    \subitem \spxentry{pysmme.transforms}, \hyperpage{8}
+
+  \indexspace
+  \bigletter P
+  \item \spxentry{predict()}\spxextra{in module pysmme.tools}, \hyperpage{1}
+  \item \spxentry{pysmme}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pysmme.tools}
+    \subitem \spxentry{module}, \hyperpage{1}
+  \item \spxentry{pysmme.transforms}
+    \subitem \spxentry{module}, \hyperpage{8}
+
+  \indexspace
+  \bigletter R
+  \item \spxentry{RH()}\spxextra{in module pysmme.transforms}, \hyperpage{8}
+  \item \spxentry{Rotate()}\spxextra{in module pysmme.transforms}, \hyperpage{9}
+
+  \indexspace
+  \bigletter S
+  \item \spxentry{softmaximin()}\spxextra{in module pysmme.tools}, \hyperpage{3}
+
+  \indexspace
+  \bigletter W
+  \item \spxentry{wt()}\spxextra{in module pysmme.transforms}, \hyperpage{9}
+
+\end{sphinxtheindex}

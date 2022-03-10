@@ -1,0 +1,716 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>pysmme package &#8212; pysmme 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="pysmme" href="modules.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="pysmme-package">
+<h1>pysmme package<a class="headerlink" href="#pysmme-package" title="Permalink to this headline">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-pysmme.tools">
+<span id="pysmme-tools-module"></span><h2>pysmme.tools module<a class="headerlink" href="#module-pysmme.tools" title="Permalink to this headline">¶</a></h2>
+<p>This module contains functionality for i) solving (fitting, calibrating) the soft maximin problem 
+and ii) predicting from this fitted solution (model).</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pysmme.tools.predict">
+<span class="sig-prename descclassname"><span class="pre">pysmme.tools.</span></span><span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmme.tools.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make Prediction From an smme Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>fit</strong><span class="classifier">smme_dict</span></dt><dd><p>The output from a <code class="docutils literal notranslate"><span class="pre">pysmme.tools.softmaximin</span></code> call</p>
+</dd>
+<dt><strong>x</strong><span class="classifier">list, matrix or string</span></dt><dd><p>an object that should be like the input to the <code class="docutils literal notranslate"><span class="pre">pysmme.tools.softmaximin</span></code> call that 
+produced the object <code class="docutils literal notranslate"><span class="pre">fit</span></code>. For general  models a matrix
+with column dimension equal to that of  the original input. 
+For array models with custom design a list 
+and with wavelet design the name of the wavelet used.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>list</dt><dd><p>A list of length <code class="docutils literal notranslate"><span class="pre">len(zeta)</span></code>. If <code class="docutils literal notranslate"><span class="pre">x</span></code> is an <span class="math notranslate nohighlight">\(k \times p\)</span> matrix <code class="docutils literal notranslate"><span class="pre">x</span></code>
+each list item is an <span class="math notranslate nohighlight">\(k \times m_\zeta\)</span> matrix containing the linear
+predictors computed for each model. If <code class="docutils literal notranslate"><span class="pre">x</span></code> is a string or  a
+list of matrices each of size <span class="math notranslate nohighlight">\(k_{i} \times p_i\)</span>,  each list item is an array
+of size <span class="math notranslate nohighlight">\(k_1 \times \cdots \times k_d \times m_\zeta\)</span>,
+<span class="math notranslate nohighlight">\(d\in \{1,2,3\}\)</span>, with the linear predictors computed for each model.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Given input <code class="docutils literal notranslate"><span class="pre">x</span></code> data this function computes the linear predictors
+using the fitted model coefficients supplied in  the <code class="docutils literal notranslate"><span class="pre">object</span></code> which should be produced by  
+<code class="docutils literal notranslate"><span class="pre">softmaximin</span></code>. If <code class="docutils literal notranslate"><span class="pre">object</span></code> is the result of fitting general type model  
+<code class="docutils literal notranslate"><span class="pre">x</span></code> should be a <span class="math notranslate nohighlight">\(k \times p\)</span> matrix (<span class="math notranslate nohighlight">\(p\)</span> is the number of model
+coefficients and <span class="math notranslate nohighlight">\(k\)</span> is the number of new data points). 
+If <code class="docutils literal notranslate"><span class="pre">object</span></code> is the result of fitting a model with tensor design <cite>x`</cite> should be a list containing 
+<span class="math notranslate nohighlight">\(k_i \times p_i, i = 1, 2, 3\)</span> matrices 
+(<span class="math notranslate nohighlight">\(k_i\)</span> is the number of new marginal data points in the <span class="math notranslate nohighlight">\(i\)</span>.</p>
+<p class="rubric">Examples</p>
+<p>#array data 
+##size of example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">65</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">13</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">13</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>##marginal design matrices (Kronecker components)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>##common features and effects</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">common_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="c1">#sparsity of common effects</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">common_effects</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">*</span> <span class="n">common_features</span>
+</pre></div>
+</div>
+<p>##group response</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">n</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">G</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">bg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">common_features</span><span class="p">)</span> <span class="o">+</span> <span class="n">common_effects</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">mu</span> <span class="o">=</span> <span class="n">RH</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">RH</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">RH</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">bg</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="s2">&quot;F&quot;</span><span class="p">)</span> <span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">y</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">g</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">))</span> <span class="o">+</span> <span class="n">mu</span>
+</pre></div>
+</div>
+<p>##fit model for range of lambda and zeta</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">zeta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">softmaximin</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">zeta</span> <span class="o">=</span> <span class="n">zeta</span><span class="p">,</span> <span class="n">penalty</span> <span class="o">=</span> <span class="s2">&quot;lasso&quot;</span><span class="p">,</span> <span class="n">alg</span> <span class="o">=</span> <span class="s2">&quot;npg&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">yhat</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>#Array data and wavelets
+##size of example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">4</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>##wavelet design</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="s2">&quot;la8&quot;</span>
+</pre></div>
+</div>
+<p>##common features and effects</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">common_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="c1">#sparsity of common effects</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">common_effects</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">*</span> <span class="n">common_features</span>
+</pre></div>
+</div>
+<p>##group response</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">n</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">G</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">bg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">common_features</span><span class="p">)</span> <span class="o">+</span> <span class="n">common_effects</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">mu</span> <span class="o">=</span> <span class="n">iwt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">bg</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="s2">&quot;F&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">y</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">g</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">))</span> <span class="o">+</span> <span class="n">mu</span>
+</pre></div>
+</div>
+<p>##fit model for range of lambda and zeta</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">zeta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">softmaximin</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">zeta</span> <span class="o">=</span> <span class="n">zeta</span><span class="p">,</span> <span class="n">penalty</span> <span class="o">=</span> <span class="s2">&quot;lasso&quot;</span><span class="p">,</span> <span class="n">alg</span> <span class="o">=</span> <span class="s2">&quot;npg&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">modelno</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">zetano</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">yhat</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">yhat</span><span class="p">[</span><span class="n">zetano</span><span class="p">][:,:,:,</span> <span class="n">modelno</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>#Non-array data
+##size of example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">500</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">G</span><span class="p">)</span> <span class="c1">#sample(100:500, G); </span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">G</span>
+</pre></div>
+</div>
+<p>##group design matrices</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">p</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>##common features and effects</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">common_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="c1">#sparsity of common effects</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">common_effects</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">*</span> <span class="n">common_features</span>
+</pre></div>
+</div>
+<p>##group response</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">G</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">bg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">common_features</span><span class="p">)</span> <span class="o">+</span> <span class="n">common_effects</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">g</span><span class="p">],</span> <span class="n">bg</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">y</span><span class="p">[</span><span class="n">g</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">[</span><span class="n">g</span><span class="p">])</span> <span class="o">+</span> <span class="n">mu</span>
+</pre></div>
+</div>
+<p>##fit model for range of lamb and zeta</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">softmaximin</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">zeta</span> <span class="o">=</span> <span class="n">zeta</span><span class="p">,</span> <span class="n">penalty</span> <span class="o">=</span> <span class="s2">&quot;lasso&quot;</span><span class="p">,</span> <span class="n">alg</span> <span class="o">=</span> <span class="s2">&quot;npg&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">yhat</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysmme.tools.softmaximin">
+<span class="sig-prename descclassname"><span class="pre">pysmme.tools.</span></span><span class="sig-name descname"><span class="pre">softmaximin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">penalty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nlamb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lamb_min_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lamb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">penalty_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reltol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">btmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nthreads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmme.tools.softmaximin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Efficient procedure for solving the Lasso or SCAD penalized soft maximin problem.</p>
+<p>This software implements two proximal
+gradient based algorithms (NPG and FISTA) to solve different forms of the soft
+maximin problem from Lund et al., 2022 see [1]. 1) For general group specific
+design the soft maximin problem is solved using the NPG algorithm.
+2) For fixed identical design across groups, the estimation procedure uses 
+either the FISTA algorithm or the NPG algorithm in the following two cases:
+i) For a tensor design matrix the algorithms use array arithmetic  to 
+avoid the design matrix and speed computations ii) For a wavelet based design 
+matrix the algorithms use the pyramid algorithm to avoid the design matrix and speed up
+computations.</p>
+<p>Multi-threading is possible when openMP is available.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>y</strong><span class="classifier">list of arrays or array</span></dt><dd><p>For a model with varying design across groups a list containing the <span class="math notranslate nohighlight">\(G\)</span> group specific 
+response vectors of sizes <span class="math notranslate nohighlight">\(n_i \times 1\)</span> . For a model with identical design 
+across <span class="math notranslate nohighlight">\(G\)</span> groups, 
+an array of size <span class="math notranslate nohighlight">\(n_1 \times\cdots\times n_d \times G\)</span> (<span class="math notranslate nohighlight">\(d \in \{ 1, 2, 3\}\)</span>).</p>
+</dd>
+<dt><strong>x</strong><span class="classifier">list of arrays or string</span></dt><dd><p>For a model with varying design across groups a list containing the 
+<span class="math notranslate nohighlight">\(G\)</span> group specific design matrices of sizes <span class="math notranslate nohighlight">\(n_i \times p_i\)</span>.  
+For a model with identical design across <span class="math notranslate nohighlight">\(G\)</span> groups, either i) a list containing the 
+<span class="math notranslate nohighlight">\(d \in \{ 1, 2, 3\}\)</span> marginal design matrices (tensor components) or ii) 
+a string indicating the type of wavelets to be used, see <code class="docutils literal notranslate"><span class="pre">pysmme.transforms.wt</span></code> for options.</p>
+</dd>
+<dt><strong>zeta</strong><span class="classifier">array of strictly positive floats</span></dt><dd><p>controls  the soft maximin approximation accuracy. When <code class="docutils literal notranslate"><span class="pre">len(zeta)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> 
+the procedure will distribute
+the computations using the   <code class="docutils literal notranslate"><span class="pre">nthreads</span></code> parameter below when openMP is available.</p>
+</dd>
+<dt><strong>penalty</strong><span class="classifier">string</span></dt><dd><p>specifies the penalty type. Possible values are <code class="docutils literal notranslate"><span class="pre">lasso,</span> <span class="pre">scad</span></code>.</p>
+</dd>
+<dt><strong>alg</strong><span class="classifier">string</span></dt><dd><p>specifies the optimization algorithm. Possible values are <code class="docutils literal notranslate"><span class="pre">npg,</span> <span class="pre">fista</span></code>.</p>
+</dd>
+<dt><strong>nlambda</strong><span class="classifier">strictly positive int</span></dt><dd><p>The number of <code class="docutils literal notranslate"><span class="pre">lamb</span></code> values used when lamb is not specified.</p>
+</dd>
+<dt><strong>lamb_min_ratio</strong><span class="classifier">strictly positive float</span></dt><dd><p>controls minimum <code class="docutils literal notranslate"><span class="pre">lamb</span></code> values by setting the ratio bewtween 
+<span class="math notranslate nohighlight">\(\lambda_{max}\)</span> – the (data dependent) smallest value for which all 
+coefficients are zero –  and the smallest value for <code class="docutils literal notranslate"><span class="pre">lamb</span></code>.
+Used when lamb is not specified.</p>
+</dd>
+<dt><strong>lamb</strong><span class="classifier">array of strictly positive floats</span></dt><dd><p>used  as penalty parameters.</p>
+</dd>
+<dt><strong>scale_y</strong><span class="classifier">strictly positive float</span></dt><dd><p>that is the response   <code class="docutils literal notranslate"><span class="pre">y</span></code> is multiplied with.</p>
+</dd>
+<dt><strong>penalty_factor</strong><span class="classifier">array</span></dt><dd><p>size <span class="math notranslate nohighlight">\(p_1 \times \cdots \times p_d\)</span> of positive floats. 
+Is multiplied with each element in   <code class="docutils literal notranslate"><span class="pre">lamb</span></code> to allow
+differential penalization on the coefficients.</p>
+</dd>
+<dt><strong>reltol</strong><span class="classifier">strictly positive float</span></dt><dd><p>giving the convergence tolerance for the inner loop.</p>
+</dd>
+<dt><strong>maxiter</strong><span class="classifier">positive int</span></dt><dd><p>giving the maximum number of  iterations
+allowed for each   <code class="docutils literal notranslate"><span class="pre">lamb</span></code> value, when  summing over all outer iterations
+for said   <code class="docutils literal notranslate"><span class="pre">lamb</span></code>.</p>
+</dd>
+<dt><strong>steps</strong><span class="classifier">strictly positive int</span></dt><dd><p>giving the number of steps used in the
+multi-step adaptive lasso algorithm for non-convex penalties. Automatically
+set to 1 when   <code class="docutils literal notranslate"><span class="pre">penalty</span> <span class="pre">=</span> <span class="pre">&quot;lasso&quot;</span></code>.</p>
+</dd>
+<dt><strong>btmax</strong><span class="classifier">strictly positive integer giving the maximum number of backtracking</span></dt><dd><p>steps allowed in each iteration.</p>
+</dd>
+<dt><strong>c</strong><span class="classifier">strictly positive float</span></dt><dd><p>used in the NPG algorithm.</p>
+</dd>
+<dt><strong>tau</strong><span class="classifier">strictly positive float</span></dt><dd><p>used to control the stepsize for NPG.</p>
+</dd>
+<dt><strong>M</strong><span class="classifier">pos int</span></dt><dd><p>giving the look back for the NPG.</p>
+</dd>
+<dt><strong>nu</strong><span class="classifier">strictly positive</span></dt><dd><p>float used to control the stepsize in the proximal algorithm. A  value less than 1 will decrease 
+the stepsize and a value larger than one will increase it.</p>
+</dd>
+<dt><strong>Lmin</strong><span class="classifier">pos float</span></dt><dd><p>used by the NPG algorithm to control the
+stepsize. For the default  <code class="docutils literal notranslate"><span class="pre">Lmin</span> <span class="pre">=</span> <span class="pre">0</span></code> the maximum step size is the same
+as for the FISTA algorithm.</p>
+</dd>
+<dt><strong>lse</strong><span class="classifier">bool</span></dt><dd><p>indicating whether to use log sum exp-loss.  TRUE is
+default and yields the loss below.</p>
+</dd>
+<dt><strong>nthreads</strong><span class="classifier">pos int</span></dt><dd><p>giving the number of threads to use when  openMP  is available.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>spec</strong><span class="classifier">string</span></dt><dd><p>contains specifications of the model fitted by the function call</p>
+</dd>
+<dt><strong>coef</strong><span class="classifier">array</span></dt><dd><p>A math:<cite>p times`nlamb matrix containing the
+estimates of the model coefficients (  :math:`beta</cite>) for each   <code class="docutils literal notranslate"><span class="pre">lamb</span></code>-value
+for which the procedure converged. When   <code class="docutils literal notranslate"><span class="pre">len(zeta)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>
+a   <code class="docutils literal notranslate"><span class="pre">len(zeta)</span></code>-list of such matrices.</p>
+</dd>
+<dt><strong>lamb</strong><span class="classifier">Array</span></dt><dd><p>containing the sequence of penalty values used
+in the estimation procedure for which the procedure converged.
+When   <code class="docutils literal notranslate"><span class="pre">len(zeta)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> a   <code class="docutils literal notranslate"><span class="pre">len(zeta)</span></code>-list of such vectors.</p>
+</dd>
+<dt><strong>Obj</strong><span class="classifier">array</span></dt><dd><p>containing the objective values for each
+iteration and each model for which the procedure converged.
+When   <code class="docutils literal notranslate"><span class="pre">len(zeta)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> a   <code class="docutils literal notranslate"><span class="pre">len(zeta)</span></code>-list of such matrices.</p>
+</dd>
+<dt><strong>df</strong><span class="classifier">array</span></dt><dd><p>Indicating the nonzero model coefficients for each
+value of   <code class="docutils literal notranslate"><span class="pre">lamb</span></code> for which the procedure converged. When
+<code class="docutils literal notranslate"><span class="pre">len(zeta)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> a   <code class="docutils literal notranslate"><span class="pre">len(zeta)</span></code>-list of such vectors.</p>
+</dd>
+<dt><strong>dimcoef</strong><span class="classifier">int or np.array</span></dt><dd><p>Indicating the number <span class="math notranslate nohighlight">\(p\)</span> of model parameters.
+For array data a vector giving the dimension of the model coefficient array <span class="math notranslate nohighlight">\(\beta\)</span></p>
+</dd>
+<dt><strong>dimobs</strong><span class="classifier">integer</span></dt><dd><p>The number of observations. For array data a vector giving the number of  observations in each dimension.</p>
+</dd>
+<dt><strong>dimmodel</strong><span class="classifier">int</span></dt><dd><p>The dimension of the array model. <code class="docutils literal notranslate"><span class="pre">None</span></code> for general models.</p>
+</dd>
+<dt><strong>iter</strong><span class="classifier">np.array</span></dt><dd><p>The  number of  iterations for each <code class="docutils literal notranslate"><span class="pre">lamb</span></code> value for which the procedure converged. When
+<code class="docutils literal notranslate"><span class="pre">len(zeta)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> a   <code class="docutils literal notranslate"><span class="pre">len(zeta)</span></code>-list of such vectors. <code class="docutils literal notranslate"><span class="pre">bt_iter</span></code>  is total 
+number of backtracking steps performed,
+<code class="docutils literal notranslate"><span class="pre">bt_enter</span></code> is the number of times the backtracking is initiated,
+and   <code class="docutils literal notranslate"><span class="pre">iter</span></code> is a vector containing the  number of  iterations for each
+<code class="docutils literal notranslate"><span class="pre">lamb</span></code> value and    <code class="docutils literal notranslate"><span class="pre">iter</span></code> is total number of iterations. TODO!!! notoutputted</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Consider modeling heterogeneous data <span class="math notranslate nohighlight">\(\{y_1,\ldots, y_n\}\)</span> by dividing
+it into <span class="math notranslate nohighlight">\(G\)</span> groups <span class="math notranslate nohighlight">\(\mathbf{y}_g = (y_1, \ldots, y_{n_g})\)</span> ,
+<span class="math notranslate nohighlight">\(g \in \{ 1,\ldots, G\}\)</span> and then using a linear model</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{y}_g = \mathbf{X}_gb_g + \epsilon_g, \  g \in \{1,\ldots, G\},\]</div>
+<p>to model the group response. Then <span class="math notranslate nohighlight">\(b_g\)</span> is a group specific <span class="math notranslate nohighlight">\(p\times 1\)</span>
+coefficient vector, <span class="math notranslate nohighlight">\(\mathbf{X}_g\)</span> an <span class="math notranslate nohighlight">\(n_g\times p\)</span> group design matrix and
+<span class="math notranslate nohighlight">\(\epsilon_g\)</span> an <span class="math notranslate nohighlight">\(n_g\times 1\)</span> error term. The objective is to estimate
+a common coefficient <span class="math notranslate nohighlight">\(\beta\)</span> such that <span class="math notranslate nohighlight">\(\mathbf{X}_g\beta\)</span> is a robust
+and good approximation to <span class="math notranslate nohighlight">\(\mathbf{X}_gb_g\)</span> across groups.</p>
+<p>Following [1], this objective may be accomplished by
+solving the soft maximin estimation problem</p>
+<div class="math notranslate nohighlight">
+\[\min_{\beta}\frac{1}{\zeta}\log\bigg(\sum_{g = 1}^G \exp(-\zeta \hat V_g(\beta))\bigg) + \lambda  \Vert\beta\Vert_1, \quad \zeta &gt; 0,\lambda \geq 0.\]</div>
+<p>Here <span class="math notranslate nohighlight">\(\zeta\)</span> essentially controls the amount of pooling across groups
+(<span class="math notranslate nohighlight">\(\zeta \sim 0\)</span> effectively ignores grouping and pools observations) and</p>
+<div class="math notranslate nohighlight">
+\[\hat V_g(\beta):=\frac{1}{n_g}(2\beta^\top \mathbf{X}_g^\top \mathbf{y}_g -\beta^\top \mathbf{X}_g^\top \mathbf{X}_g\beta),\]</div>
+<p>is the empirical explained variance, see [2] for more
+details and references.</p>
+<p>The function  <code class="docutils literal notranslate"><span class="pre">softmaximin</span></code> solves the soft maximin estimation problem in
+large scale settings for a sequence of penalty parameters
+<span class="math notranslate nohighlight">\(\lambda_{max}&gt;\ldots &gt;\lambda_{min}&gt;0\)</span> and a sequence of strictly positive
+softmaximin  parameters <span class="math notranslate nohighlight">\(\zeta_1, \zeta_2,\ldots\)</span>.</p>
+<p>The implementation also solves the
+problem above with the penalty given by the SCAD penalty, using the multiple
+step adaptive lasso procedure to loop over the inner proximal algorithm.</p>
+<p>Two optimization algorithms  are implemented in the SMME packages;
+a non-monotone proximal gradient (NPG) algorithm and a fast iterative soft
+thresholding algorithm (FISTA).</p>
+<p>The implementation is particularly efficient for models where the design is
+identical across groups i.e. <span class="math notranslate nohighlight">\(\mathbf{X}_g = \mathbf{X}\)</span>
+<span class="math notranslate nohighlight">\(\forall g \in \{1, \ldots, G\}\)</span> in the following two cases:</p>
+<p>i) first if <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> has Kronecker (tensor) structure i.e. for marginal <span class="math notranslate nohighlight">\(n_i\times p_i\)</span> design matrices <span class="math notranslate nohighlight">\(\mathbf{M}_1,\ldots, \mathbf{M}_d\)</span>
+, <span class="math notranslate nohighlight">\(d \in \{ 1, 2, 3\}\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{X} = \bigotimes_{i=1}^d \mathbf{M}_i \]</div>
+<p>then <code class="docutils literal notranslate"><span class="pre">y</span></code> is a <span class="math notranslate nohighlight">\(d + 1\)</span> dimensional response array
+and    <code class="docutils literal notranslate"><span class="pre">x</span></code> is a list containing the <span class="math notranslate nohighlight">\(d\)</span> marginal matrices
+<span class="math notranslate nohighlight">\(\mathbf{M}_1,\ldots, \mathbf{M}_d\)</span>. In this case  softmaximin solves
+the soft maximin problem using minimal memory by way of tensor optimized
+arithmetic, see also   <code class="docutils literal notranslate"><span class="pre">RH</span></code>.</p>
+<p>ii) second, if the design matrix <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> is the inverse matrix of an
+orthogonal wavelet transform  then <code class="docutils literal notranslate"><span class="pre">softmaximin</span></code>  will solve the soft maximin 
+problem given  <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">=</span> <span class="pre">str</span></code> – where <code class="docutils literal notranslate"><span class="pre">str</span></code> is a shorthand for the wavelet basis (see….) – and 
+the <span class="math notranslate nohighlight">\(d + 1\)</span> dimensional response array  <code class="docutils literal notranslate"><span class="pre">y</span></code>. In this case  the  pyramid algorithm is used 
+to compute multiplications involving <span class="math notranslate nohighlight">\(\mathbf{X}\)</span>.</p>
+<p>Note that when multiple values for <span class="math notranslate nohighlight">\(\zeta\)</span> is provided it is  possible to
+distribute the computations across CPUs if openMP is available.</p>
+<p class="rubric">References</p>
+<dl class="citation">
+<dt class="label" id="r1b89a25bbb8d-1"><span class="brackets">1</span></dt>
+<dd><p>Lund, A., S. W. Mogensen and N. R. Hansen (2022). Soft Maximin Estimation for
+Heterogeneous Data. Scandinavian Journal of Statistics. url = {<a class="reference external" href="https://doi.org/10.1111/sjos.12580">https://doi.org/10.1111/sjos.12580</a>}</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>#Non-array data ##size of example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">65</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">13</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">13</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>##marginal design matrices (Kronecker components)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>##common features and effects</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">common_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="c1">#sparsity of common effects</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">common_effects</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">*</span> <span class="n">common_features</span>
+</pre></div>
+</div>
+<p>##group response</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">n</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">G</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">bg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">common_features</span><span class="p">)</span> <span class="o">+</span> <span class="n">common_effects</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">mu</span> <span class="o">=</span> <span class="n">RH</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">RH</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">RH</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">bg</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="s2">&quot;F&quot;</span><span class="p">)</span> <span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">y</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">g</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">))</span> <span class="o">+</span> <span class="n">mu</span>
+</pre></div>
+</div>
+<p>##fit model for range of lambda and zeta</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">zeta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">softmaximin</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">zeta</span> <span class="o">=</span> <span class="n">zeta</span><span class="p">,</span> <span class="n">penalty</span> <span class="o">=</span> <span class="s2">&quot;lasso&quot;</span><span class="p">,</span> <span class="n">alg</span> <span class="o">=</span> <span class="s2">&quot;npg&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">modelno</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">zetano</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">betahat</span> <span class="o">=</span> <span class="n">fit</span><span class="p">[</span><span class="s2">&quot;coef&quot;</span><span class="p">][</span><span class="n">zetano</span><span class="p">][:,</span> <span class="n">modelno</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">common_effects</span><span class="p">,</span> <span class="s2">&quot;r+&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">betahat</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span> 
+</pre></div>
+</div>
+<p>#Array data and wavelets
+##size of example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">set</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">4</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>##common features and effects</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">common_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="c1">#sparsity of common effects</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">common_effects</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">*</span> <span class="n">common_features</span>
+</pre></div>
+</div>
+<p>##group response</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">n</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">G</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">bg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">common_features</span><span class="p">)</span> <span class="o">+</span> <span class="n">common_effects</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">mu</span> <span class="o">=</span> <span class="n">iwt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">bg</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="s2">&quot;F&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">y</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">g</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">))</span> <span class="o">+</span> <span class="n">mu</span>
+</pre></div>
+</div>
+<p>##fit model for range of lambda and zeta</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">zeta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">softmaximin</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">zeta</span> <span class="o">=</span> <span class="n">zeta</span><span class="p">,</span> <span class="n">penalty</span> <span class="o">=</span> <span class="s2">&quot;lasso&quot;</span><span class="p">,</span> <span class="n">alg</span> <span class="o">=</span> <span class="s2">&quot;npg&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">modelno</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">zetano</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">betahat</span> <span class="o">=</span> <span class="n">fit</span><span class="p">[</span><span class="s2">&quot;coef&quot;</span><span class="p">][</span><span class="n">zetano</span><span class="p">][:,</span> <span class="n">modelno</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">common_effects</span><span class="p">,</span> <span class="s2">&quot;r+&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">betahat</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span> 
+</pre></div>
+</div>
+<p>##Non-array data
+##size of example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">500</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">G</span><span class="p">)</span> <span class="c1">#sample(100:500, G); </span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">G</span>
+</pre></div>
+</div>
+<p>##group design matrices</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">p</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>##common features and effects</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">common_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="c1">#sparsity of common effects</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">common_effects</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">*</span> <span class="n">common_features</span>
+</pre></div>
+</div>
+<p>##group response</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">G</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">bg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">common_features</span><span class="p">)</span> <span class="o">+</span> <span class="n">common_effects</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">g</span><span class="p">],</span> <span class="n">bg</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">y</span><span class="p">[</span><span class="n">g</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">[</span><span class="n">g</span><span class="p">])</span> <span class="o">+</span> <span class="n">mu</span>
+</pre></div>
+</div>
+<p>##fit model for range of lamb and zeta</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">softmaximin</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">zeta</span> <span class="o">=</span> <span class="n">zeta</span><span class="p">,</span> <span class="n">penalty</span> <span class="o">=</span> <span class="s2">&quot;lasso&quot;</span><span class="p">,</span> <span class="n">alg</span> <span class="o">=</span> <span class="s2">&quot;npg&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">betahat</span> <span class="o">=</span> <span class="n">fit</span><span class="p">[</span><span class="s2">&quot;coef&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>##estimated common effects for specific lamb and zeta</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">modelno</span> <span class="o">=</span> <span class="mi">6</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">zetano</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">common_effects</span><span class="p">,</span> <span class="s2">&quot;r+&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">betahat</span><span class="p">[</span><span class="n">zetano</span><span class="p">][:,</span> <span class="n">modelno</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span> 
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="module-pysmme.transforms">
+<span id="pysmme-transforms-module"></span><h2>pysmme.transforms module<a class="headerlink" href="#module-pysmme.transforms" title="Permalink to this headline">¶</a></h2>
+<p>This module contains various transforms for computing fast matrix vector products in specific situations.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pysmme.transforms.H">
+<span class="sig-prename descclassname"><span class="pre">pysmme.transforms.</span></span><span class="sig-name descname"><span class="pre">H</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmme.transforms.H" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysmme.transforms.RH">
+<span class="sig-prename descclassname"><span class="pre">pysmme.transforms.</span></span><span class="sig-name descname"><span class="pre">RH</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmme.transforms.RH" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Rotated H-transform of a 3d Array by a Matrix.</p>
+<p>This function is an implementation of the <span class="math notranslate nohighlight">\(\rho\)</span>-operator found in
+{Currie et al 2006}. It forms the basis of the GLAM arithmetic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>M</strong><span class="classifier">np.array</span></dt><dd><p>A <span class="math notranslate nohighlight">\({n \times p_1}\)</span> matrix.</p>
+</dd>
+<dt><strong>A</strong><span class="classifier">np.array</span></dt><dd><p>A 3d array of size <span class="math notranslate nohighlight">\(p_1 \times p_2 \times p_3\)</span>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>np.array</dt><dd><p>A 3d array of size <span class="math notranslate nohighlight">\(p_2 \times p_3 \times n\)</span>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>For details see {Currie et al 2006} [2]. Note that this particular implementation
+is not used in the  routines underlying the optimization procedure.</p>
+<p class="rubric">References</p>
+<dl class="citation">
+<dt class="label" id="r37e8b8eec84f-2"><span class="brackets">2</span></dt>
+<dd><p>Currie, I. D., M. Durban, and P. H. C. Eilers (2006). Generalized linear
+array models with applications to multidimensional smoothing.
+{Journal of the Royal Statistical Society. Series B}. 68, 
+259-280. url = {<a class="reference external" href="http://dx.doi.org/10.1111/j.1467-9868.2006.00543.x">http://dx.doi.org/10.1111/j.1467-9868.2006.00543.x</a>}.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">n1</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span> <span class="n">n2</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span> <span class="n">n3</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span> <span class="n">p1</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span> <span class="n">p2</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span> <span class="n">p3</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">###marginal design matrices (Kronecker components)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">p1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">n2</span><span class="p">,</span> <span class="n">p2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">n3</span><span class="p">,</span> <span class="n">p3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R1</span> <span class="o">=</span> <span class="n">RH</span><span class="p">(</span><span class="n">X3</span><span class="p">,</span> <span class="n">RH</span><span class="p">(</span><span class="n">X2</span><span class="p">,</span> <span class="n">RH</span><span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">A</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">X3</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">X2</span><span class="p">,</span> <span class="n">X1</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="p">[</span><span class="n">p1</span> <span class="o">*</span> <span class="n">p2</span> <span class="o">*</span> <span class="n">p3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;F&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">R1</span><span class="p">,</span> <span class="p">[</span><span class="n">n1</span> <span class="o">*</span> <span class="n">n2</span> <span class="o">*</span> <span class="n">n3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;F&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">R2</span><span class="p">))</span> 
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysmme.transforms.Rotate">
+<span class="sig-prename descclassname"><span class="pre">pysmme.transforms.</span></span><span class="sig-name descname"><span class="pre">Rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmme.transforms.Rotate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysmme.transforms.iwt">
+<span class="sig-prename descclassname"><span class="pre">pysmme.transforms.</span></span><span class="sig-name descname"><span class="pre">iwt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'la8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmme.transforms.iwt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Discrete inverse wavelet transform.</p>
+<p>This function performs a level J wavelet transform of the input array (1d, 2d, or 3d) 
+using the pyramid algorithm (Mallat 1989). Implemented in C by Brandon Whithcer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">np.array</span></dt><dd><p>a 1, 2, or 3 dimensional data array. The size of each dimension must be dyadic.</p>
+</dd>
+<dt><strong>wf</strong><span class="classifier">string</span></dt><dd><p>the type of wavelet family used.</p>
+</dd>
+<dt><strong>J</strong><span class="classifier">int</span></dt><dd><p>J is the level (depth) of the decomposition. For default None the max
+depth is used making  <code class="docutils literal notranslate"><span class="pre">wt(x)</span></code> equal to multiplying <code class="docutils literal notranslate"><span class="pre">x</span></code> with the
+corresponding wavelet matrix.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>np.array</dt><dd><p>np.array of shape identical to input x continant the transformed</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This is a C++/Python wrapper function for a C implementation of the
+discrete inverse wavelet transform. Given a data array (1d, 2d or 3d) with dyadic
+dimensions sizes this transform is computed efficiently via the pyramid
+algorithm using C routines from  Brandon Whitcher’s Waveslim package for R, see
+Percival and Walden (2000); Gencay, Selcuk and Whitcher (2001).</p>
+<p>This functionality is used in the computations underlying <code class="docutils literal notranslate"><span class="pre">softmaximin</span></code>
+to perform multiplications involving the wavelet (design) matrix efficiently.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysmme.transforms.wt">
+<span class="sig-prename descclassname"><span class="pre">pysmme.transforms.</span></span><span class="sig-name descname"><span class="pre">wt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'la8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmme.transforms.wt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Discrete wavelet transform.</p>
+<p>This function performs a level J wavelet transform of the input array (1d, 2d, or 3d) 
+using the pyramid algorithm (Mallat 1989). Implemented in C by Brandon Whithcer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">np.array</span></dt><dd><p>A 1, 2, or 3 dimensional data array. The size of each dimension must be dyadic.</p>
+</dd>
+<dt><strong>wf</strong><span class="classifier">string</span></dt><dd><p>The type of wavelet family used.</p>
+</dd>
+<dt><strong>J</strong><span class="classifier">int</span></dt><dd><p>J is the level (depth) of the decomposition. For default None the max
+depth is used and  <code class="docutils literal notranslate"><span class="pre">wt(x)</span></code> is equal to multiplying <code class="docutils literal notranslate"><span class="pre">x</span></code> with the
+corresponding wavelet matrix.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>np.array</dt><dd><p>np.array of shape identical to input x continant the transformed x</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This is a C++/Python wrapper function for a C implementation of the
+discrete wavelet transform. Given a data array (1d, 2d or 3d) with dyadic
+dimensions sizes this transform is computed efficiently via the pyramid
+algorithm using C routines from  Brandon Whitcher’s Waveslim package for R, see
+Percival and Walden (2000); Gencay, Selcuk and Whitcher (2001).</p>
+<p>This functionality is used in the computations underlying {{softmaximin}}
+to perform multiplications involving the wavelet (design) matrix efficiently.</p>
+<p class="rubric">References</p>
+<dl class="citation">
+<dt class="label" id="rf3008b54b32e-3"><span class="brackets">3</span></dt>
+<dd><p>Gencay, R., F. Selcuk and B. Whitcher (2001) An Introduction to Wavelets and
+Other Filtering Methods in Finance and Economics, Academic Press.</p>
+</dd>
+<dt class="label" id="rf3008b54b32e-4"><span class="brackets">4</span></dt>
+<dd><p>Mallat, S. G. (1989) A theory for multiresolution signal decomposition: the
+wavelet representation, IEEE Transactions on Pattern Analysis and Machine
+Intelligence, 11, No. 7, 674-693.</p>
+</dd>
+<dt class="label" id="rf3008b54b32e-5"><span class="brackets">5</span></dt>
+<dd><p>Percival, D. B. and A. T. Walden (2000) Wavelet Methods for Time Series
+Analysis, Cambridge University Press.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">order</span> <span class="o">=</span> <span class="s2">&quot;F&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d1</span> <span class="o">=</span> <span class="n">wt</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span> <span class="mf">1.41421356e+00</span><span class="p">,</span>  <span class="mf">4.16333634e-17</span><span class="p">],</span>
+<span class="go">     [ 5.65685425e+00, -3.33644647e-16]],</span>
+<span class="go">    [[ 2.82842712e+00, -2.77555756e-17],</span>
+<span class="go">     [-2.64953102e-16,  1.27279221e+01]]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iwt</span><span class="p">(</span><span class="n">d2</span><span class="p">)</span>     
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="module-pysmme">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pysmme" title="Permalink to this headline">¶</a></h2>
+<p>Root module of your package</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">pysmme</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pysmme</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pysmme package</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">pysmme</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">pysmme</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Adam Lund.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/pysmme.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
