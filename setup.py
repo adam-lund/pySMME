@@ -116,16 +116,38 @@ class CMakeBuild(build_ext):
             ["cmake", "--build", "."] + build_args, cwd=self.build_temp
         )
 
+classifiers = ["Development Status :: 5 - Production/Stable",
+"Intended Audience :: Education",
+"Operating System :: MacOS",
+"License :: OSI Approved :: MIT License",
+"Programming Language :: Python :: 3",]
+
+long_des = """Efficient C++ procedure for solving the Lasso or SCAD penalized soft maximin problem. 
+
+  This is a C++ implementation of two proximal
+  gradient based algorithms (NPG and FISTA) that solve different forms of the soft
+  maximin problem from Lund et al., 2022 see {https://doi.org/10.1111/sjos.12580}. 
+  1) For general group specific design the soft maximin problem is solved using 
+  the NPG algorithm.
+  2) For fixed identical design across groups, the  soft maximin problem is solved using  
+  either the FISTA algorithm or the NPG algorithm in the following two cases:
+  i) For a tensor structured design matrix the algorithms use array arithmetic  to 
+  avoid the design matrix and speed computations ii) For a wavelet based design 
+  matrix the algorithms use the pyramid algorithm to avoid the design matrix and speed up
+  computations. Multi-threading is possible when openMP is available."""
 
 # The information here can also be placed in setup.cfg - better separation of
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
     name="pysmme",
-    version="1.0",
+    version="1.0,1",
+    license= "mit",
+    classifiers=classifiers,
     author="Adam Lund",
+    url="https://adam-lund.github.io",
     author_email="adam.lund@math.ku.dk",
-    description="softmaximin estimation in python",
-    long_description="",
+    description="Soft maximin estimation in Python",
+    long_description= long_des,
     ext_modules=[CMakeExtension("pysmme._smme")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,

@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/_deps/pybind11repo-subbuild/CMakeFiles/pybind11repo-populate"
+		},
+		{
+			"file" : "/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/_deps/pybind11repo-subbuild/CMakeFiles/pybind11repo-populate.rule"
+		},
+		{
+			"file" : "/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/_deps/pybind11repo-subbuild/CMakeFiles/pybind11repo-populate-complete.rule"
+		},
+		{
+			"file" : "/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/_deps/pybind11repo-subbuild/pybind11repo-populate-prefix/src/pybind11repo-populate-stamp/pybind11repo-populate-build.rule"
+		},
+		{
+			"file" : "/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/_deps/pybind11repo-subbuild/pybind11repo-populate-prefix/src/pybind11repo-populate-stamp/pybind11repo-populate-configure.rule"
+		},
+		{
+			"file" : "/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/_deps/pybind11repo-subbuild/pybind11repo-populate-prefix/src/pybind11repo-populate-stamp/pybind11repo-populate-download.rule"
+		},
+		{
+			"file" : "/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/_deps/pybind11repo-subbuild/pybind11repo-populate-prefix/src/pybind11repo-populate-stamp/pybind11repo-populate-install.rule"
+		},
+		{
+			"file" : "/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/_deps/pybind11repo-subbuild/pybind11repo-populate-prefix/src/pybind11repo-populate-stamp/pybind11repo-populate-mkdir.rule"
+		},
+		{
+			"file" : "/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/_deps/pybind11repo-subbuild/pybind11repo-populate-prefix/src/pybind11repo-populate-stamp/pybind11repo-populate-patch.rule"
+		},
+		{
+			"file" : "/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/_deps/pybind11repo-subbuild/pybind11repo-populate-prefix/src/pybind11repo-populate-stamp/pybind11repo-populate-test.rule"
+		},
+		{
+			"file" : "/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/_deps/pybind11repo-subbuild/pybind11repo-populate-prefix/src/pybind11repo-populate-stamp/pybind11repo-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"pybind11repo-populate"
+		],
+		"name" : "pybind11repo-populate"
+	}
+}
