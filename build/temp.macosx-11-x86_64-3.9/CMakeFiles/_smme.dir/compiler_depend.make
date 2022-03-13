@@ -1370,7 +1370,6 @@ CMakeFiles/_smme.dir/src/bindings.cpp.o: CMakeFiles/_smme.dir/cmake_pch.hxx \
   ../../extern/carma/include/carma_bits/converters.h \
   ../../extern/carma/include/carma_bits/numpytoarma.h \
   ../../extern/carma/include/carma_bits/armatonumpy.h \
-  ../../src/wave_filter.cpp \
   ../../src/auxfunc.h \
   ../../src/dwt.h \
   ../../src/dwt3.h \
@@ -1382,8 +1381,6 @@ CMakeFiles/_smme.dir/src/bindings.cpp.o: CMakeFiles/_smme.dir/cmake_pch.hxx \
 ../../src/dwt.h:
 
 ../../src/auxfunc.h:
-
-../../src/wave_filter.cpp:
 
 ../../extern/carma/include/carma_bits/numpytoarma.h:
 

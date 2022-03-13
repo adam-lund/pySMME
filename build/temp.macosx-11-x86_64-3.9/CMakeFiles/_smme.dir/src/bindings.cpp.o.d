@@ -1011,7 +1011,6 @@ CMakeFiles/_smme.dir/src/bindings.cpp.o: \
   /Users/adam/Documents/Github/pysmme/extern/carma/include/carma_bits/converters.h \
   /Users/adam/Documents/Github/pysmme/extern/carma/include/carma_bits/numpytoarma.h \
   /Users/adam/Documents/Github/pysmme/extern/carma/include/carma_bits/armatonumpy.h \
-  /Users/adam/Documents/Github/pysmme/src/wave_filter.cpp \
   /Users/adam/Documents/Github/pysmme/src/auxfunc.h \
   /Users/adam/Documents/Github/pysmme/src/dwt.h \
   /Users/adam/Documents/Github/pysmme/src/dwt3.h \

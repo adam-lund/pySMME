@@ -1,4 +1,4 @@
-#include <string>  
+/* #include <string>  
 
 void qmf(int L, double* g, double* h){
   for(int i = 0; i < L; i++){
@@ -208,6 +208,7 @@ void wave_filter(std::string filt,  double * g, double * h, int L){
         }            
 } 
 
+*/
 
 /*   select.bs3.1 <- function() {
     L <- 4
@@ -219,4 +220,4 @@ void wave_filter(std::string filt,  double * g, double * h, int L){
   } */
 
 
- 
+  

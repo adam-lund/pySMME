@@ -1,6 +1,6 @@
 """
-This module contains functionality for i) solving (fitting, calibrating) the soft maximin problem 
-and ii) predicting from this fitted solution (model).
+This module contains functionality for i) solving (fitting, calibrating...) the soft 
+maximin problem and ii) predicting from this solution (fitted model).
 
 """
 import numpy as np
@@ -14,11 +14,12 @@ class _smme_dict(dict):
       out = self._dict["spec"] + ":" + "\n"
       j = 0
       for z in self._dict["zeta"]: # list of length num of z of np arrays of len endmod(z)
-        out = out + "\n" + "{:<15} {:<8} {:<8}".format("zeta = " + str(z), "DF", "Lambda")
+        out = out + "\n" + "{:<15} {:<8} {:<15} {:<8}".format("zeta = " + str(z), "DF", "Lambda", "Iter")
         for i in range(len(self._dict["df"][j])):
-          df = self._dict["df"][j][i]
+          df = int(self._dict["df"][j][i])
           lamb = self._dict["lamb"][j][i]
-          out = out + "\n" + "{:<15} {:<8} {:<8}".format("  ", df, lamb)
+          iter = int(self._dict["iter"][j][i])
+          out = out + "\n" + "{:<15} {:<8} {:<15} {:<8}".format("  ", df, f"{lamb:.5}", iter)
         j = j + 1
       return out
       
@@ -31,8 +32,8 @@ alg,
 nlamb = 30,
 lamb_min_ratio = 1e-04,
 lamb = None,
-scale_y = 1,
 penalty_factor = None,
+scale_y = 1,
 reltol = 1e-05,
 maxiter = 1000,
 steps = 1,
@@ -45,20 +46,7 @@ Lmin = 0,
 lse = True,
 nthreads = 4):
   
-  r"""Efficient procedure for solving the Lasso or SCAD penalized soft maximin problem.
-
-  This software implements two proximal
-  gradient based algorithms (NPG and FISTA) to solve different forms of the soft
-  maximin problem from Lund et al., 2022 see [1]. 1) For general group specific
-  design the soft maximin problem is solved using the NPG algorithm.
-  2) For fixed identical design across groups, the estimation procedure uses 
-  either the FISTA algorithm or the NPG algorithm in the following two cases:
-  i) For a tensor design matrix the algorithms use array arithmetic  to 
-  avoid the design matrix and speed computations ii) For a wavelet based design 
-  matrix the algorithms use the pyramid algorithm to avoid the design matrix and speed up
-  computations.
-
-  Multi-threading is possible when openMP is available.
+  r"""Function for solving the soft maximin estimation problem
 
   Parameters
   ----------
@@ -69,99 +57,100 @@ nthreads = 4):
     an array of size :math:`n_1 \times\cdots\times n_d \times G` (:math:`d \in \{ 1, 2, 3\}`).
   x : list of arrays or string
     For a model with varying design across groups a list containing the 
-    :math:`G` group specific design matrices of sizes :math:`n_i \times p_i`.  
+    :math:`G` group specific design matrices of sizes :math:`n_i \times p`.  
     For a model with identical design across :math:`G` groups, either i) a list containing the 
     :math:`d \in \{ 1, 2, 3\}` marginal design matrices (tensor components) or ii) 
     a string indicating the type of wavelets to be used, see ``pysmme.transforms.wt`` for options. 
   zeta : array of strictly positive floats 
-    controls  the soft maximin approximation accuracy. When ``len(zeta) > 1`` 
+    Controls  the soft maximin approximation accuracy. When ``len(zeta) > 1`` 
     the procedure will distribute
     the computations using the   ``nthreads`` parameter below when openMP is available.
   penalty : string 
-    specifies the penalty type. Possible values are ``lasso, scad``.
+    Specifies the penalty type. Possible values are ``lasso, scad``.
   alg : string 
-    specifies the optimization algorithm. Possible values are ``npg, fista``.
+    Specifies the optimization algorithm. Possible values are ``npg, fista``.
   nlambda : strictly positive int 
-    The number of ``lamb`` values used when lamb is not specified.
+    The number of ``lamb`` values to use when ``lamb`` is not specified.
   lamb_min_ratio : strictly positive float 
-    controls minimum ``lamb`` values by setting the ratio bewtween 
+    Controls the minimum ``lamb`` value by setting the ratio bewtween 
     :math:`\lambda_{max}` -- the (data dependent) smallest value for which all 
-    coefficients are zero --  and the smallest value for ``lamb``.
-    Used when lamb is not specified.
+    coefficients are zero --  and the smallest value of ``lamb``.
+    Used when ``lamb`` is not specified.
   lamb : array of strictly positive floats 
-    used  as penalty parameters.
+    Penalty parameters.
+  penalty_factor : np.array  
+    Positive floats  that are multiplied with the parameters to allow for
+    differential penalization on the these. Same size and shape as the model 
+    coefficient container (array or vector).
   scale_y : strictly positive float 
-    that is the response   ``y`` is multiplied with.
-  penalty_factor : array 
-    size :math:`p_1 \times \cdots \times p_d` of positive floats. 
-    Is multiplied with each element in   ``lamb`` to allow
-    differential penalization on the coefficients. 
+    Scaling factor for the response   ``y``. To temper potential overflows.
   reltol : strictly positive float 
-    giving the convergence tolerance for the inner loop.
+    Convergence tolerance for the proximal algorithm.
   maxiter : positive int
-    giving the maximum number of  iterations
+    The maximum number of  iterations
     allowed for each   ``lamb`` value, when  summing over all outer iterations
     for said   ``lamb``.
   steps : strictly positive int 
-    giving the number of steps used in the
-    multi-step adaptive lasso algorithm for non-convex penalties. Automatically
-    set to 1 when   ``penalty = "lasso"``.
-  btmax : strictly positive integer giving the maximum number of backtracking
-    steps allowed in each iteration. 
+    The number of steps used in the multi-step adaptive lasso algorithm for 
+    non-convex penalties. Automatically  set to 1 when   ``penalty = "lasso"``.
+  btmax : strictly positive integer 
+   The maximum number of backtracking steps allowed in each iteration. 
   c : strictly positive float 
-    used in the NPG algorithm. 
+    Used in the NPG algorithm. 
   tau : strictly positive float 
-    used to control the stepsize for NPG. 
-  M : pos int
-    giving the look back for the NPG. 
-  nu : strictly positive 
-    float used to control the stepsize in the proximal algorithm. A  value less than 1 will decrease 
+    Used to control the stepsize for NPG. 
+  M : positive int
+     The look back for the NPG. 
+  nu : strictly positive float
+    Ccontrols the stepsize in the proximal algorithm. A  value less than 1 will decrease 
     the stepsize and a value larger than one will increase it.
-  Lmin : pos float 
-    used by the NPG algorithm to control the
-    stepsize. For the default  ``Lmin = 0`` the maximum step size is the same
+  Lmin : positive float 
+    Controls the stepsize in the NPG algorithm. For the default  
+    ``Lmin = 0`` the maximum step size is the same
     as for the FISTA algorithm.
   lse : bool 
-    indicating whether to use log sum exp-loss.  TRUE is
+    Indicates if log sum exp-loss is used.  TRUE is
     default and yields the loss below.
   nthreads : pos int
-    giving the number of threads to use when  openMP  is available. 
+    The number of threads to use when  openMP  is available. 
 
   Returns
   -------  
   spec : string 
-   contains specifications of the model fitted by the function call
-  coef : array
-   A math:`p \times`nlamb matrix containing the
-   estimates of the model coefficients (  :math:`beta`) for each   ``lamb``-value
+    Specifications of the model fitted by the function call.
+  coef : list or np.array
+   A :math:`p \times` ``nlamb`` matrix containing the
+   estimates of the model coefficients for each   ``lamb``-value
    for which the procedure converged. When   ``len(zeta) > 1``
    a   ``len(zeta)``-list of such matrices.
-  lamb : Array
-   containing the sequence of penalty values used
+  lamb : list or np.array
+   The sequence of penalty values used
    in the estimation procedure for which the procedure converged.
    When   ``len(zeta) > 1`` a   ``len(zeta)``-list of such vectors.
-  Obj : array
-   containing the objective values for each
+  Obj : list or np.array
+   The objective values for each
    iteration and each model for which the procedure converged.
    When   ``len(zeta) > 1`` a   ``len(zeta)``-list of such matrices.
-  df : array 
-   Indicating the nonzero model coefficients for each
+  df : list or np.array 
+   Vector containing the nonzero model coefficients (degrees of freedom) for each
    value of   ``lamb`` for which the procedure converged. When
    ``len(zeta) > 1`` a   ``len(zeta)``-list of such vectors.
   dimcoef : int or np.array
    Indicating the number :math:`p` of model parameters.
-   For array data a vector giving the dimension of the model coefficient array :math:`\beta`
-  dimobs : integer
-    The number of observations. For array data a vector giving the number of  observations in each dimension.
-  dimmodel : int
+   For array data a vector giving the dimension of the model coefficient array.
+  dimobs : int or np.array
+    The number of observations. For array data a vector giving the number of  
+    observations in each dimension.
+  dimmodel : int or None
    The dimension of the array model. ``None`` for general models.
-  iter : np.array 
-   The  number of  iterations for each ``lamb`` value for which the procedure converged. When
-   ``len(zeta) > 1`` a   ``len(zeta)``-list of such vectors. ``bt_iter``  is total 
-   number of backtracking steps performed,
-   ``bt_enter`` is the number of times the backtracking is initiated,
-   and   ``iter`` is a vector containing the  number of  iterations for each
-   ``lamb`` value and    ``iter`` is total number of iterations. TODO!!! notoutputted
+  diagnostics : dict 
+   Key ``iter`` is a vector containing the number of  iterations for each
+   ``lamb`` value for which the algorithm converged. When ``len(zeta) > 1`` a   
+   ``len(zeta)``-list of such vectors. Key ``bt_iter``  is a  ``len(zeta)`` vector
+   with total number of backtracking steps performed across all (converged) ``lamb`` values 
+   for given ``zeta`` value. Key ``bt_enter`` is a  ``len(zeta)`` vector
+   with total number of times backtracking is initiated across all (converged) ``lamb`` values 
+   for given ``zeta`` value.
 
   Notes
   -----
@@ -177,7 +166,7 @@ nthreads = 4):
   a common coefficient :math:`\beta` such that :math:`\mathbf{X}_g\beta` is a robust
   and good approximation to :math:`\mathbf{X}_gb_g` across groups.
  
-  Following [1], this objective may be accomplished by
+  Following [1]_, this objective may be accomplished by
   solving the soft maximin estimation problem
   
   .. math:: \min_{\beta}\frac{1}{\zeta}\log\bigg(\sum_{g = 1}^G \exp(-\zeta \hat V_g(\beta))\bigg) + \lambda  \Vert\beta\Vert_1, \quad \zeta > 0,\lambda \geq 0.
@@ -187,7 +176,7 @@ nthreads = 4):
    
   .. math:: \hat V_g(\beta):=\frac{1}{n_g}(2\beta^\top \mathbf{X}_g^\top \mathbf{y}_g -\beta^\top \mathbf{X}_g^\top \mathbf{X}_g\beta),
   
-  is the empirical explained variance, see [2] for more
+  is the empirical explained variance, see [1]_ for more
   details and references.
  
   The function  ``softmaximin`` solves the soft maximin estimation problem in
@@ -230,7 +219,7 @@ nthreads = 4):
   References
   ----------
   .. [1] Lund, A., S. W. Mogensen and N. R. Hansen (2022). Soft Maximin Estimation for
-      Heterogeneous Data. Scandinavian Journal of Statistics. url = {https://doi.org/10.1111/sjos.12580}
+      Heterogeneous Data. Scandinavian Journal of Statistics. url = https://doi.org/10.1111/sjos.12580
  
   Examples
   --------
@@ -439,7 +428,7 @@ nthreads = 4):
   else:
     return "Error: y must be list or array"
   if(alg not in ["npg", "fista"]):
-    return "Error: algorithm must be correctly specified"
+    return "Error: Algorithm must be correctly specified"
   if(c <= 0):
     return "Error: c must be strictly positive"
   if(Lmin < 0):
@@ -447,11 +436,11 @@ nthreads = 4):
   #if(np.mean(zeta <= 0) > 0): todo!!
   #  return "all zetas must be strictly positive"
   if(penalty not in ["lasso", "scad"]):
-    return "Error: penalty must be correctly specified"
+    return "Error: Penalty must be correctly specified"
   if(np.min(penalty_factor) < 0):
     return "Error: penalty.factor must be positive"
   if(penalty_factor.size != p):
-    return "Error: number of elements in penalty.factor " + str(penalty_factor.size) + " is not equal to the number of coefficients " +  str(p)
+    return "Error: Number of elements in penalty.factor " + str(penalty_factor.size) + " is not equal to the number of coefficients " +  str(p)
   if(penalty == "lasso"):
     steps = 1
   if(lamb == None):
@@ -462,7 +451,7 @@ nthreads = 4):
     makelamb = False
     nlamb = len(lamb)
    
-  Coef, DF, Btiter, ITER, endmodelno, Lamb, Stops, openmp = pga(x,
+  Coef, DF, Btiter, Btenter, ITER, endmodelno, Lamb, Stops, openmp = pga(x,
                                                             Z,
                                                             penalty,
                                                             zeta,
@@ -487,37 +476,24 @@ nthreads = 4):
                                                             wf)
 
 
-  """ if(mean(res$Stops[2, ]) > 0):
-    zs = which(res$Stops[2, ] != 0)
+  if(np.mean(Stops[1, ]) > 0):
+    zs = np.where(Stops[1, ] != 0)
+    print("Warning: Maximum number of inner iterations (" + str(maxiter) + ") reached for model no." + str(endmodelno[zs] + 1) + " for zeta(s)" + str(zeta[zs]))
 
-  warning(paste("maximum number of inner iterations (",maxiter,") reached for model no.",
-                paste(endmodelno[zs] + 1, collapse = " ")," for zeta(s)",
-                paste(zeta[zs], collapse = " ")))
+  if(np.mean(Stops[2, ]) > 0):
+    zs = np.where(Stops[2, ] != 0)
+    print("Warning: Maximum number of backtraking steps reached for model no." + str(endmodelno[zs] + 1) + " for zeta(s)" + str(zeta[zs]))
 
-  if(mean(res$Stops[3, ]) > 0):
-    zs = which(res$Stops[3, ] != 0)
-
-  warning(paste("maximum number of backtraking steps reached for model no.",
-                paste(endmodelno[zs] + 1, collapse = " ")," for zeta(s)",
-                paste(zeta[zs], collapse = " ")))
-
-  if(res$openMP == 1):
-    message(paste("Multithreading enabled using", nthreads, "threads"))
+  if(openmp == 1):
+    print("Note: Multithreading was used with " + str(nthreads) + " threads")
  
-  # Iter = res$Iter
-  #
-  # maxiterpossible = sum(Iter > 0)
-  # maxiterreached = sum(Iter >= (maxiter - 1))
-  #
-  # if(maxiterreached > 0){
-  #
-  # warning(
-  # paste("maximum number of inner iterations (",maxiter,") reached ",maxiterreached," time(s) out of ",maxiterpossible," possible")
-  # )
-  #
-  #}"""
-
   
+  maxiterpossible = np.sum(np.where(ITER > 0, 1, 0))
+  maxiterreached = np.sum(np.where(ITER >= (maxiter - 1), 1, 0))
+  
+  if(maxiterreached > 0):
+     print("Warning: Maximum number of inner iterations (" + str(maxiter) + ") reached " + str(maxiterreached) + " time(s) out of " + str(maxiterpossible) + " possible")
+   
   if(num_of_zeta > 1):
     #Obj = []
     iter = [None] *  num_of_zeta
@@ -528,7 +504,7 @@ nthreads = 4):
       coef[z] = Coef[: , 0:int(endmodelno[z]) + 1, z] / scale_y
       lamb_out[z] = Lamb[0:int(endmodelno[z]) + 1, z] / scale_y
       df[z] = DF[0:int(endmodelno[z]) + 1, z]
-      iter[z] = ITER[1:int(endmodelno[z]) + 1, z]
+      iter[z] = ITER[0:int(endmodelno[z]) + 1, z]
      ## Obj[[z]] = res$Obj[, 1:int(endmodelno[z]) ,1]
   else:
     coef = Coef[: , 0:int(endmodelno) + 1, 0] / scale_y
@@ -545,13 +521,13 @@ nthreads = 4):
   else:
     spec = str(penalty) + "-penalized smme model with varying inputs across the " + str(G) + " groups" 
    
-  out = _smme_dict({"df":df, "lamb":lamb_out, "zeta":zeta, "spec":spec})
+  out = _smme_dict({"df":df, "lamb":lamb_out, "zeta":zeta, "spec":spec, "iter":iter})
   out["spec"] = spec  
   out["zeta"] = zeta
   out["coef"] = coef
   out["lamb"] = lamb_out
   out["df"] = df
-  out["iter"] = iter
+  out["diagnostics"] = {"iter" : iter, "bt_iter" : Btiter, "bt_enter" : Btenter}
   #out["Obj"] = Obj
 
   if(fix_array == 1):
@@ -564,53 +540,44 @@ nthreads = 4):
     out["dimmodel"] = None
 
   out["endmod"] = endmodelno
-  #out$BT = drop(res$BT)
-  #Iter = list()
-  ##Iter$bt_enter = res$btenter #vector   nzeta todo!
-  #Iter$bt_iter = res$btiter #vector   nzeta
- # #Iter$sum_iter = sum(Iter$iter, na.rm = TRUE) #vector   nzeta todo iter!!
- # out["Iter"] = drop(Iter)
- # out["Stops"] = res$Stops
 
   return out
 
 def predict(fit, x):
 
- r""" Make Prediction From an smme Object.
+ r""" Make predictions from a fitted smme model.
  
    Parameters
    ----------
    fit : smme_dict
        The output from a ``pysmme.tools.softmaximin`` call
  
-   x : list, matrix or string
-       an object that should be like the input to the ``pysmme.tools.softmaximin`` call that 
+   x : list, np.array or string
+       An object that should be like the input to the ``pysmme.tools.softmaximin`` call that 
        produced the object ``fit``. For general  models a matrix
        with column dimension equal to that of  the original input. 
-       For array models with custom design a list 
-       and with wavelet design the name of the wavelet used. 
+       For array models with custom design a list like the one supplied to ``softmaximin`` to produce ``fit``
+       and for a wavelet design the name of the wavelet used to produce ``fit``. 
  
    Returns
    -------
    list     
-        A list of length ``len(zeta)``. If ``x`` is an :math:`k \times p` matrix ``x``
-        each list item is an :math:`k \times m_\zeta` matrix containing the linear
-        predictors computed for each model. If ``x`` is a string or  a
-        list of matrices each of size :math:`k_{i} \times p_i`,  each list item is an array
-        of size :math:`k_1 \times \cdots \times k_d \times m_\zeta`,
-        :math:`d\in \{1,2,3\}`, with the linear predictors computed for each model.
+        A list of length ``len(zeta)``. If ``x`` is a :math:`k \times p` matrix 
+        each list item is a :math:`k \times m_\zeta` matrix containing the linear
+        predictors computed for each ``lamb``. If ``x`` is a string or  a
+        list of matrices and ``fit["dimmodel"] = d``,  each list item is a :math:`d + 1` array 
+        containing predictions computed for each ``lamb``.
  
    Notes
    -----
-    Given input ``x`` data this function computes the linear predictors
-    using the fitted model coefficients supplied in  the ``object`` which should be produced by  
-    ``softmaximin``. If ``object`` is the result of fitting general type model  
+    Given input ``fit`` and ``x``, this function computes the linear predictors
+    using the fitted model coefficients supplied in  ``fit``  produced by  
+    ``softmaximin``. If ``fit`` is the result of fitting general type model  
     ``x`` should be a :math:`k \times p` matrix (:math:`p` is the number of model
     coefficients and :math:`k` is the number of new data points). 
-    If ``object`` is the result of fitting a model with tensor design `x`` should be a list containing 
-    :math:`k_i \times p_i, i = 1, 2, 3` matrices 
-    (:math:`k_i` is the number of new marginal data points in the :math:`i`th dimension).
-    or a string indicating the wavelet used to produec ``object``.
+    If ``fit`` is the result of fitting a model with tensor design, ``x`` should be a list containing 
+    :math:`k_i \times p_i, i = 1, 2, 3` matrices (:math:`k_i` is the number of new marginal 
+    data points in the :math:`i` th dimension) or a string indicating the wavelet used to produce ``fit``.
    
    Examples
    --------

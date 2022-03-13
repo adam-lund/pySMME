@@ -18,7 +18,8 @@ def wt(x, wf = "la8", J = None):
        A 1, 2, or 3 dimensional data array. The size of each dimension must be dyadic.
 
    wf : string
-       The type of wavelet family used.
+       The type of wavelet family used. Options are 
+       ``"haar", "d4", "??","mb4","fk4","d6","fk6", "d8","fk8", "la8","mb8","bl14","fk14", "d16","la16","mb16", "la20","bl20","fk22", "mb24"``
 
    J : int
        J is the level (depth) of the decomposition. For default None the max
@@ -28,7 +29,7 @@ def wt(x, wf = "la8", J = None):
    Returns
    -------
    np.array
-       np.array of shape identical to input x continant the transformed x
+      Array with shape identical to input ``x`` containing the transform values. 
 
    Notes
    -----
@@ -36,9 +37,9 @@ def wt(x, wf = "la8", J = None):
    discrete wavelet transform. Given a data array (1d, 2d or 3d) with dyadic
    dimensions sizes this transform is computed efficiently via the pyramid
    algorithm using C routines from  Brandon Whitcher's Waveslim package for R, see
-   Percival and Walden (2000); Gencay, Selcuk and Whitcher (2001).
+   Percival and Walden (2000) ; Gencay, Selcuk and Whitcher (2001).
 
-   This functionality is used in the computations underlying {{softmaximin}}
+   This functionality is used in the computations underlying ``pysmme.tools.softmaximin``
    to perform multiplications involving the wavelet (design) matrix efficiently.
 
    References
@@ -76,7 +77,7 @@ def wt(x, wf = "la8", J = None):
  if(dim > 2):
   p3 = d[2]
  X = np.reshape(x, (p1, p2 * p3), order = "F")
- print("dd")
+
  out = WT(X, dim, wf, J, p1, p2, p3) #p1 x p2 * p3
  #out <- drop(array(out, c(p1, p2, p3)))
  #if(is.null(dim(out))){out <- as.matrix(out)}
@@ -85,26 +86,27 @@ def wt(x, wf = "la8", J = None):
 def iwt(x, wf = "la8", J = None):
  r"""Discrete inverse wavelet transform.
 
-  This function performs a level J wavelet transform of the input array (1d, 2d, or 3d) 
+  This function performs a level J wavelet transform of a dyadic input array (1d, 2d, or 3d) 
   using the pyramid algorithm (Mallat 1989). Implemented in C by Brandon Whithcer.
 
   Parameters
   ----------
   x : np.array
-      a 1, 2, or 3 dimensional data array. The size of each dimension must be dyadic.
+      A 1, 2, or 3 dimensional data array. The size of each dimension must be dyadic.
 
   wf : string
-      the type of wavelet family used.
+      The type of wavelet family used. Options are ``"haar", "d4", "??","mb4","fk4","d6","fk6", 
+      "d8","fk8", "la8","mb8","bl14","fk14", "d16","la16","mb16", "la20","bl20","fk22", "mb24"``
 
   J : int
-      J is the level (depth) of the decomposition. For default None the max
-      depth is used making  ``wt(x)`` equal to multiplying ``x`` with the
-      corresponding wavelet matrix.
+      The level (depth) of the decomposition. For default ``None`` the max
+      depth is used and  ``wt(x)`` is equal to multiplying ``x`` with the
+      corresponding inverse wavelet transform matrix.
 
   Returns
   -------
   np.array
-      np.array of shape identical to input x continant the transformed 
+      Array with shape identical to input ``x`` containing the transform values. 
 
   Notes
   -----
@@ -159,12 +161,12 @@ def RH(M, A):
   r"""The Rotated H-transform of a 3d Array by a Matrix.
 
   This function is an implementation of the :math:`\rho`-operator found in
-  {Currie et al 2006}. It forms the basis of the GLAM arithmetic.
+  (Currie et al, 2006). It forms the basis of the GLAM arithmetic.
 
   Parameters
   ----------
   M : np.array
-      A :math:`{n \times p_1}` matrix.
+      A :math:`n \times p_1` matrix.
 
   A : np.array
       A 3d array of size :math:`p_1 \times p_2 \times p_3`.
@@ -176,15 +178,15 @@ def RH(M, A):
 
   Notes
   -----
-  For details see {Currie et al 2006} [2]. Note that this particular implementation
+  For details see (Currie et al, 2006) [2]_. Note that this particular implementation
   is not used in the  routines underlying the optimization procedure.
 
   References
   ----------
   .. [2]  Currie, I. D., M. Durban, and P. H. C. Eilers (2006). Generalized linear
      array models with applications to multidimensional smoothing.
-     {Journal of the Royal Statistical Society. Series B}. 68, 
-     259-280. url = {http://dx.doi.org/10.1111/j.1467-9868.2006.00543.x}.
+     Journal of the Royal Statistical Society. Series B. 68, 
+     259-280. url = http://dx.doi.org/10.1111/j.1467-9868.2006.00543.x.
 
   Examples
   --------

@@ -1,12 +1,9 @@
 #ifdef _OPENMP
 #include <omp.h>
 #endif
-//#include "smme.hpp"
 
 #include <armadillo>
 #include <carma>
-
-#include "wave_filter.cpp"
 #include "auxfunc.h"
 
 namespace py = pybind11;
@@ -45,17 +42,17 @@ int openmp = 0;
 
 if(array){//npg and fista for array data------
 
-int Lwave = get_L(wf); 
-
 double *g = nullptr, *h = nullptr;
+
+arma::mat Phi1, Phi2, Phi3;
+
+int Lwave, n1, n2, n3, p1, p2, p3;
+if(wave){
+Lwave = get_L(wf); 
 g = new double[Lwave]; 
 h = new double[Lwave];    
 wave_filter(wf, g, h, Lwave); 
 
-arma::mat Phi1, Phi2, Phi3;
-
-int n1, n2, n3, p1, p2, p3;
-if(wave){
 n1 = phi[0].cast<int>(), 
 n2 = phi[1].cast<int>(), 
 n3 = phi[2].cast<int>(), 
@@ -77,7 +74,8 @@ arma::vec Btenter(nzeta), Btiter(nzeta), eig1, eig2, eig3, EndMod(nzeta);
 arma::mat DF(nlambda, nzeta), ITER(nlambda, nzeta), Lamb(nlambda, nzeta),
           Phi1tPhi1, Phi2tPhi2, Phi3tPhi3, Stops(3, nzeta);
 
-arma::cube Coef(p, nlambda, nzeta), OBJ(maxiter, nlambda, nzeta), PhitZ(p1, p2 * p3, G),    
+arma::cube Coef(p, nlambda, nzeta), //OBJ(maxiter, nlambda, nzeta), 
+           PhitZ(p1, p2 * p3, G),    
            Z(n1, n2 * n3, G);
 
 for(int i = 0; i < G; i++){Z.slice(i) = resp[i].cast<arma::mat>();}//some issues!!!!!
@@ -163,7 +161,7 @@ arma::mat absBeta(p1, p2 * p3), Beta(p1, p2 * p3), Betaprev(p1, p2 * p3),
 Betas(p, nlambda), BT(nlambda, maxiter), Delta(maxiter, nlambda),
 dpen(p1, p2 * p3), Gamma(p1, p2 * p3),
 GradlossX(p1, p2 * p3), GradlossXprev(p1, p2 * p3), GradlossX2(p1, p2 * p3),
-Obj(maxiter, nlambda),
+//Obj(maxiter, nlambda),
 PhitPhiBeta, PhitPhiX, pospart(p1, p2 * p3),
 Prop(p1, p2 * p3), PhiBeta(n1, n2 * n3), PhiProp(n1, n2 * n3), PhiX(n1, n2 * n3),
 wGamma(p1, p2 * p3), R, S,  X(p1, p2 * p3), Xprev, Zi;
@@ -179,7 +177,7 @@ GradlossXprev.fill(0);
 BT.fill(-1);
 
 Delta.fill(42);
-Obj.fill(42);
+//Obj.fill(42);
 Pen.fill(0);
 
 ////initialize
@@ -241,7 +239,7 @@ if(k == 0){
 
 Xprev = X;
 obj(k) = lossX + l1penalty(wGamma, X);
-Obj(k, j) = obj(k);
+//Obj(k, j) = obj(k);
 Delta(k, j) = delta;
 
 }else{//if not the first iteration
@@ -306,7 +304,7 @@ X = Prop;
 PhiX = PhiProp;
 eevX = eevProp;
 obj(k) = lossProp + penProp;
-Obj(k, j) = obj(k);
+//Obj(k, j) = obj(k);
 Iter(j) = k;
 Delta(k, j) = delta;
 
@@ -352,7 +350,7 @@ if(k == 0){
 Betaprev = Beta;
 X = Beta;
 obj(k) = lossBeta + l1penalty(wGamma, Beta);
-Obj(k, j) = obj(k);
+//Obj(k, j) = obj(k);
 BT(j, k) = 1; //force initial backtracking
 Delta(k, j) = delta;
 
@@ -437,7 +435,7 @@ lossBeta = lossProp;
 obj(k) = lossBeta + l1penalty(wGamma, Beta);
 Iter(j) = k;
 Delta(k, j) = delta;
-Obj(k, j) = obj(k);
+//Obj(k, j) = obj(k);
 
 ////proximal divergence check
 if(obj(k) > obj(k - 1)){ascent = ascent + 1;}else{ascent = 0;}
@@ -507,7 +505,7 @@ Coef.slice(z) = Betas;
 DF.col(z) = df;
 Btenter(z) = btenter;
 Btiter(z) = btiter;
-OBJ.slice(z) = Obj;
+//OBJ.slice(z) = Obj;
 ITER.col(z) = Iter;
 EndMod(z) = endmodelno;
 Lamb.col(z) = lambda;
@@ -523,6 +521,7 @@ delete [] h;
 return py::make_tuple(carma::cube_to_arr(Coef),
                       carma::mat_to_arr(DF),
                       carma::col_to_arr(Btiter),
+                      carma::col_to_arr(Btenter),
                       carma::mat_to_arr(ITER),
                       carma::col_to_arr(EndMod),
                       carma::mat_to_arr(Lamb),
@@ -558,9 +557,10 @@ PHItRESP.col(i) = PHI(i, 0).t() * RESP(i, 0); //eta...//px1 * G stor in matrix
 }
 
 int nzeta = zeta.n_elem;
-arma::vec Btiter(nzeta),  EndMod(nzeta);
+arma::vec Btiter(nzeta), Btenter(nzeta),  EndMod(nzeta);
 arma::mat DF(nlambda, nzeta), ITER(nlambda, nzeta), Lamb(nlambda, nzeta), Stops(3, nzeta);
-cube Coef(p, nlambda, nzeta), OBJ(maxiter, nlambda, nzeta);
+cube Coef(p, nlambda, nzeta)//, OBJ(maxiter, nlambda, nzeta)
+;
 
 //make lambda sequence
 if(makelamb){
@@ -598,7 +598,7 @@ openmp = 1;
 #endif
 for(int z = 0; z < nzeta ; z++){//zeta loop-----
 
-int btiter = 0, endmodelno = nlambda, Stopconv = 0, Stopmaxiter = 0, Stopbt = 0;
+int btiter = 0, btenter = 0, endmodelno = nlambda, Stopconv = 0, Stopmaxiter = 0, Stopbt = 0;
 
 double ascad = 3.7, delta, lossProp = 0, lossX, penProp = 0, relobj, val;
 
@@ -607,7 +607,8 @@ Pen(maxiter);
 
 arma::mat absX(p, 1), Betas(p, nlambda), BT(nlambda, maxiter),
 Delta(maxiter, nlambda), dpen(p, 1), Gamma(p, 1), GradlossX(p, 1),
-GradlossXprev(p, 1), GradlossX2(p, 1), Obj(maxiter, nlambda), PHItPHIX,
+GradlossXprev(p, 1), GradlossX2(p, 1), //Obj(maxiter, nlambda), 
+PHItPHIX,
 pospart(p, 1), Prop(p, 1),
 wGamma(p, 1), R,S,X(p, 1), Xprev(p, 1);
 
@@ -621,7 +622,7 @@ GradlossXprev.fill(0);
 BT.fill(-1);
 
 Delta.fill(42);//todo
-Obj.fill(42);//todo
+//Obj.fill(42);//todo
 Pen.fill(0);//todo
 
 ////initialize at zero which is optimal for lambmax pr construction
@@ -688,7 +689,7 @@ if(k == 0){
 
 Xprev = X;
 obj(k) = lossX + l1penalty(wGamma, X);
-Obj(k, j) = obj(k);
+//Obj(k, j) = obj(k);
 
 }else{//if not the first iteration
 
@@ -798,13 +799,14 @@ break;
 Stops(0, z) = Stopconv;
 Stops(1, z) = Stopmaxiter;
 Stops(2, z) = Stopbt;
+btenter = accu((BT > -1));
 btiter = accu((BT > 0) % BT);
 
 Coef.slice(z) = Betas;
 DF.col(z) = df;
-//Btenter(z) = btenter;
+Btenter(z) = btenter;
 Btiter(z) = btiter;
-OBJ.slice(z) = Obj;
+//OBJ.slice(z) = Obj;
 ITER.col(z) = Iter;
 EndMod(z) = endmodelno;
 Lamb.col(z) = lambda;
@@ -819,6 +821,7 @@ Lamb.col(z) = lambda;
 return py::make_tuple(carma::cube_to_arr(Coef),
                       carma::mat_to_arr(DF),
                       carma::col_to_arr(Btiter),
+                      carma::col_to_arr(Btenter),
                       carma::mat_to_arr(ITER),
                       carma::col_to_arr(EndMod),
                       carma::mat_to_arr(Lamb),

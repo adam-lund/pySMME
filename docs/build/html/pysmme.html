@@ -35,51 +35,60 @@
             
   <section id="pysmme-package">
 <h1>pysmme package<a class="headerlink" href="#pysmme-package" title="Permalink to this headline">¶</a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</section>
+<p>Efficient procedure for solving the Lasso or SCAD penalized soft maximin problem.</p>
+<p>This software implements two proximal
+gradient based algorithms (NPG and FISTA) to solve two different forms of the soft
+maximin problem from Lund et al., 2022 see [1] <a class="reference external" href="https://doi.org/10.1111/sjos.12580">https://doi.org/10.1111/sjos.12580</a>:</p>
+<p>1) For general group specific design the soft maximin problem is solved using the
+NPG algorithm.</p>
+<p>2) For fixed identical design across groups, the estimation procedure uses
+either the FISTA algorithm or the NPG algorithm in the following two cases:
+i) For a tensor design matrix the algorithms use array arithmetic  to
+avoid the design matrix and speed computations ii) For a wavelet based design
+matrix the algorithms use the pyramid algorithm to avoid the design matrix and
+speed up computations.</p>
+<p>Multi-threading is possible when openMP is available.</p>
 <section id="module-pysmme.tools">
 <span id="pysmme-tools-module"></span><h2>pysmme.tools module<a class="headerlink" href="#module-pysmme.tools" title="Permalink to this headline">¶</a></h2>
-<p>This module contains functionality for i) solving (fitting, calibrating) the soft maximin problem 
-and ii) predicting from this fitted solution (model).</p>
+<p>This module contains functionality for i) solving (fitting, calibrating) the soft 
+maximin problem and ii) predicting from this fitted solution (model).</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pysmme.tools.predict">
 <span class="sig-prename descclassname"><span class="pre">pysmme.tools.</span></span><span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmme.tools.predict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make Prediction From an smme Object.</p>
+<dd><p>Make predictions from a fitted smme model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>fit</strong><span class="classifier">smme_dict</span></dt><dd><p>The output from a <code class="docutils literal notranslate"><span class="pre">pysmme.tools.softmaximin</span></code> call</p>
 </dd>
-<dt><strong>x</strong><span class="classifier">list, matrix or string</span></dt><dd><p>an object that should be like the input to the <code class="docutils literal notranslate"><span class="pre">pysmme.tools.softmaximin</span></code> call that 
+<dt><strong>x</strong><span class="classifier">list, np.array or string</span></dt><dd><p>An object that should be like the input to the <code class="docutils literal notranslate"><span class="pre">pysmme.tools.softmaximin</span></code> call that 
 produced the object <code class="docutils literal notranslate"><span class="pre">fit</span></code>. For general  models a matrix
 with column dimension equal to that of  the original input. 
-For array models with custom design a list 
-and with wavelet design the name of the wavelet used.</p>
+For array models with custom design a list like the one supplied to <code class="docutils literal notranslate"><span class="pre">softmaximin</span></code> to produce <code class="docutils literal notranslate"><span class="pre">fit</span></code>
+and for a wavelet design the name of the wavelet used to produce <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt>list</dt><dd><p>A list of length <code class="docutils literal notranslate"><span class="pre">len(zeta)</span></code>. If <code class="docutils literal notranslate"><span class="pre">x</span></code> is an <span class="math notranslate nohighlight">\(k \times p\)</span> matrix <code class="docutils literal notranslate"><span class="pre">x</span></code>
-each list item is an <span class="math notranslate nohighlight">\(k \times m_\zeta\)</span> matrix containing the linear
-predictors computed for each model. If <code class="docutils literal notranslate"><span class="pre">x</span></code> is a string or  a
-list of matrices each of size <span class="math notranslate nohighlight">\(k_{i} \times p_i\)</span>,  each list item is an array
-of size <span class="math notranslate nohighlight">\(k_1 \times \cdots \times k_d \times m_\zeta\)</span>,
-<span class="math notranslate nohighlight">\(d\in \{1,2,3\}\)</span>, with the linear predictors computed for each model.</p>
+<dt>list</dt><dd><p>A list of length <code class="docutils literal notranslate"><span class="pre">len(zeta)</span></code>. If <code class="docutils literal notranslate"><span class="pre">x</span></code> is a <span class="math notranslate nohighlight">\(k \times p\)</span> matrix 
+each list item is a <span class="math notranslate nohighlight">\(k \times m_\zeta\)</span> matrix containing the linear
+predictors computed for each <code class="docutils literal notranslate"><span class="pre">lamb</span></code>. If <code class="docutils literal notranslate"><span class="pre">x</span></code> is a string or  a
+list of matrices and <code class="docutils literal notranslate"><span class="pre">fit[&quot;dimmodel&quot;]</span> <span class="pre">=</span> <span class="pre">d</span></code>,  each list item is a <span class="math notranslate nohighlight">\(d + 1\)</span> array 
+containing predictions computed for each <code class="docutils literal notranslate"><span class="pre">lamb</span></code>.</p>
 </dd>
 </dl>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>Given input <code class="docutils literal notranslate"><span class="pre">x</span></code> data this function computes the linear predictors
-using the fitted model coefficients supplied in  the <code class="docutils literal notranslate"><span class="pre">object</span></code> which should be produced by  
-<code class="docutils literal notranslate"><span class="pre">softmaximin</span></code>. If <code class="docutils literal notranslate"><span class="pre">object</span></code> is the result of fitting general type model  
+<p>Given input <code class="docutils literal notranslate"><span class="pre">fit</span></code> and <code class="docutils literal notranslate"><span class="pre">x</span></code>, this function computes the linear predictors
+using the fitted model coefficients supplied in  <code class="docutils literal notranslate"><span class="pre">fit</span></code>  produced by  
+<code class="docutils literal notranslate"><span class="pre">softmaximin</span></code>. If <code class="docutils literal notranslate"><span class="pre">fit</span></code> is the result of fitting general type model  
 <code class="docutils literal notranslate"><span class="pre">x</span></code> should be a <span class="math notranslate nohighlight">\(k \times p\)</span> matrix (<span class="math notranslate nohighlight">\(p\)</span> is the number of model
 coefficients and <span class="math notranslate nohighlight">\(k\)</span> is the number of new data points). 
-If <code class="docutils literal notranslate"><span class="pre">object</span></code> is the result of fitting a model with tensor design <cite>x`</cite> should be a list containing 
-<span class="math notranslate nohighlight">\(k_i \times p_i, i = 1, 2, 3\)</span> matrices 
-(<span class="math notranslate nohighlight">\(k_i\)</span> is the number of new marginal data points in the <span class="math notranslate nohighlight">\(i\)</span>.</p>
+If <code class="docutils literal notranslate"><span class="pre">fit</span></code> is the result of fitting a model with tensor design, <code class="docutils literal notranslate"><span class="pre">x</span></code> should be a list containing 
+<span class="math notranslate nohighlight">\(k_i \times p_i, i = 1, 2, 3\)</span> matrices (<span class="math notranslate nohighlight">\(k_i\)</span> is the number of new marginal 
+data points in the <span class="math notranslate nohighlight">\(i\)</span> th dimension) or a string indicating the wavelet used to produce <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
 <p class="rubric">Examples</p>
 <p>#array data 
 ##size of example</p>
@@ -180,19 +189,8 @@ If <code class="docutils literal notranslate"><span class="pre">object</span></c
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pysmme.tools.softmaximin">
-<span class="sig-prename descclassname"><span class="pre">pysmme.tools.</span></span><span class="sig-name descname"><span class="pre">softmaximin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">penalty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nlamb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lamb_min_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lamb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">penalty_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reltol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">btmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nthreads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmme.tools.softmaximin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Efficient procedure for solving the Lasso or SCAD penalized soft maximin problem.</p>
-<p>This software implements two proximal
-gradient based algorithms (NPG and FISTA) to solve different forms of the soft
-maximin problem from Lund et al., 2022 see [1]. 1) For general group specific
-design the soft maximin problem is solved using the NPG algorithm.
-2) For fixed identical design across groups, the estimation procedure uses 
-either the FISTA algorithm or the NPG algorithm in the following two cases:
-i) For a tensor design matrix the algorithms use array arithmetic  to 
-avoid the design matrix and speed computations ii) For a wavelet based design 
-matrix the algorithms use the pyramid algorithm to avoid the design matrix and speed up
-computations.</p>
-<p>Multi-threading is possible when openMP is available.</p>
+<span class="sig-prename descclassname"><span class="pre">pysmme.tools.</span></span><span class="sig-name descname"><span class="pre">softmaximin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">penalty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nlamb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lamb_min_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lamb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">penalty_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reltol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">btmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nthreads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmme.tools.softmaximin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function for solving the soft maximin estimation problem</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -202,100 +200,101 @@ across <span class="math notranslate nohighlight">\(G\)</span> groups,
 an array of size <span class="math notranslate nohighlight">\(n_1 \times\cdots\times n_d \times G\)</span> (<span class="math notranslate nohighlight">\(d \in \{ 1, 2, 3\}\)</span>).</p>
 </dd>
 <dt><strong>x</strong><span class="classifier">list of arrays or string</span></dt><dd><p>For a model with varying design across groups a list containing the 
-<span class="math notranslate nohighlight">\(G\)</span> group specific design matrices of sizes <span class="math notranslate nohighlight">\(n_i \times p_i\)</span>.  
+<span class="math notranslate nohighlight">\(G\)</span> group specific design matrices of sizes <span class="math notranslate nohighlight">\(n_i \times p\)</span>.  
 For a model with identical design across <span class="math notranslate nohighlight">\(G\)</span> groups, either i) a list containing the 
 <span class="math notranslate nohighlight">\(d \in \{ 1, 2, 3\}\)</span> marginal design matrices (tensor components) or ii) 
 a string indicating the type of wavelets to be used, see <code class="docutils literal notranslate"><span class="pre">pysmme.transforms.wt</span></code> for options.</p>
 </dd>
-<dt><strong>zeta</strong><span class="classifier">array of strictly positive floats</span></dt><dd><p>controls  the soft maximin approximation accuracy. When <code class="docutils literal notranslate"><span class="pre">len(zeta)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> 
+<dt><strong>zeta</strong><span class="classifier">array of strictly positive floats</span></dt><dd><p>Controls  the soft maximin approximation accuracy. When <code class="docutils literal notranslate"><span class="pre">len(zeta)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> 
 the procedure will distribute
 the computations using the   <code class="docutils literal notranslate"><span class="pre">nthreads</span></code> parameter below when openMP is available.</p>
 </dd>
-<dt><strong>penalty</strong><span class="classifier">string</span></dt><dd><p>specifies the penalty type. Possible values are <code class="docutils literal notranslate"><span class="pre">lasso,</span> <span class="pre">scad</span></code>.</p>
+<dt><strong>penalty</strong><span class="classifier">string</span></dt><dd><p>Specifies the penalty type. Possible values are <code class="docutils literal notranslate"><span class="pre">lasso,</span> <span class="pre">scad</span></code>.</p>
 </dd>
-<dt><strong>alg</strong><span class="classifier">string</span></dt><dd><p>specifies the optimization algorithm. Possible values are <code class="docutils literal notranslate"><span class="pre">npg,</span> <span class="pre">fista</span></code>.</p>
+<dt><strong>alg</strong><span class="classifier">string</span></dt><dd><p>Specifies the optimization algorithm. Possible values are <code class="docutils literal notranslate"><span class="pre">npg,</span> <span class="pre">fista</span></code>.</p>
 </dd>
-<dt><strong>nlambda</strong><span class="classifier">strictly positive int</span></dt><dd><p>The number of <code class="docutils literal notranslate"><span class="pre">lamb</span></code> values used when lamb is not specified.</p>
+<dt><strong>nlambda</strong><span class="classifier">strictly positive int</span></dt><dd><p>The number of <code class="docutils literal notranslate"><span class="pre">lamb</span></code> values to use when <code class="docutils literal notranslate"><span class="pre">lamb</span></code> is not specified.</p>
 </dd>
-<dt><strong>lamb_min_ratio</strong><span class="classifier">strictly positive float</span></dt><dd><p>controls minimum <code class="docutils literal notranslate"><span class="pre">lamb</span></code> values by setting the ratio bewtween 
+<dt><strong>lamb_min_ratio</strong><span class="classifier">strictly positive float</span></dt><dd><p>Controls the minimum <code class="docutils literal notranslate"><span class="pre">lamb</span></code> value by setting the ratio bewtween 
 <span class="math notranslate nohighlight">\(\lambda_{max}\)</span> – the (data dependent) smallest value for which all 
-coefficients are zero –  and the smallest value for <code class="docutils literal notranslate"><span class="pre">lamb</span></code>.
-Used when lamb is not specified.</p>
+coefficients are zero –  and the smallest value of <code class="docutils literal notranslate"><span class="pre">lamb</span></code>.
+Used when <code class="docutils literal notranslate"><span class="pre">lamb</span></code> is not specified.</p>
 </dd>
-<dt><strong>lamb</strong><span class="classifier">array of strictly positive floats</span></dt><dd><p>used  as penalty parameters.</p>
+<dt><strong>lamb</strong><span class="classifier">array of strictly positive floats</span></dt><dd><p>Penalty parameters.</p>
 </dd>
-<dt><strong>scale_y</strong><span class="classifier">strictly positive float</span></dt><dd><p>that is the response   <code class="docutils literal notranslate"><span class="pre">y</span></code> is multiplied with.</p>
+<dt><strong>penalty_factor</strong><span class="classifier">np.array</span></dt><dd><p>Positive floats  that are multiplied with the parameters to allow for
+differential penalization on the these. Same size and shape as the model 
+coefficient container (array or vector).</p>
 </dd>
-<dt><strong>penalty_factor</strong><span class="classifier">array</span></dt><dd><p>size <span class="math notranslate nohighlight">\(p_1 \times \cdots \times p_d\)</span> of positive floats. 
-Is multiplied with each element in   <code class="docutils literal notranslate"><span class="pre">lamb</span></code> to allow
-differential penalization on the coefficients.</p>
+<dt><strong>scale_y</strong><span class="classifier">strictly positive float</span></dt><dd><p>Scaling factor for the response   <code class="docutils literal notranslate"><span class="pre">y</span></code>. To temper potential overflows.</p>
 </dd>
-<dt><strong>reltol</strong><span class="classifier">strictly positive float</span></dt><dd><p>giving the convergence tolerance for the inner loop.</p>
+<dt><strong>reltol</strong><span class="classifier">strictly positive float</span></dt><dd><p>Convergence tolerance for the proximal algorithm.</p>
 </dd>
-<dt><strong>maxiter</strong><span class="classifier">positive int</span></dt><dd><p>giving the maximum number of  iterations
+<dt><strong>maxiter</strong><span class="classifier">positive int</span></dt><dd><p>The maximum number of  iterations
 allowed for each   <code class="docutils literal notranslate"><span class="pre">lamb</span></code> value, when  summing over all outer iterations
 for said   <code class="docutils literal notranslate"><span class="pre">lamb</span></code>.</p>
 </dd>
-<dt><strong>steps</strong><span class="classifier">strictly positive int</span></dt><dd><p>giving the number of steps used in the
-multi-step adaptive lasso algorithm for non-convex penalties. Automatically
-set to 1 when   <code class="docutils literal notranslate"><span class="pre">penalty</span> <span class="pre">=</span> <span class="pre">&quot;lasso&quot;</span></code>.</p>
+<dt><strong>steps</strong><span class="classifier">strictly positive int</span></dt><dd><p>The number of steps used in the multi-step adaptive lasso algorithm for 
+non-convex penalties. Automatically  set to 1 when   <code class="docutils literal notranslate"><span class="pre">penalty</span> <span class="pre">=</span> <span class="pre">&quot;lasso&quot;</span></code>.</p>
 </dd>
-<dt><strong>btmax</strong><span class="classifier">strictly positive integer giving the maximum number of backtracking</span></dt><dd><p>steps allowed in each iteration.</p>
+<dt><strong>btmax</strong><span class="classifier">strictly positive integer</span></dt><dd><p>The maximum number of backtracking steps allowed in each iteration.</p>
 </dd>
-<dt><strong>c</strong><span class="classifier">strictly positive float</span></dt><dd><p>used in the NPG algorithm.</p>
+<dt><strong>c</strong><span class="classifier">strictly positive float</span></dt><dd><p>Used in the NPG algorithm.</p>
 </dd>
-<dt><strong>tau</strong><span class="classifier">strictly positive float</span></dt><dd><p>used to control the stepsize for NPG.</p>
+<dt><strong>tau</strong><span class="classifier">strictly positive float</span></dt><dd><p>Used to control the stepsize for NPG.</p>
 </dd>
-<dt><strong>M</strong><span class="classifier">pos int</span></dt><dd><p>giving the look back for the NPG.</p>
+<dt><strong>M</strong><span class="classifier">positive int</span></dt><dd><p>The look back for the NPG.</p>
 </dd>
-<dt><strong>nu</strong><span class="classifier">strictly positive</span></dt><dd><p>float used to control the stepsize in the proximal algorithm. A  value less than 1 will decrease 
+<dt><strong>nu</strong><span class="classifier">strictly positive float</span></dt><dd><p>Ccontrols the stepsize in the proximal algorithm. A  value less than 1 will decrease 
 the stepsize and a value larger than one will increase it.</p>
 </dd>
-<dt><strong>Lmin</strong><span class="classifier">pos float</span></dt><dd><p>used by the NPG algorithm to control the
-stepsize. For the default  <code class="docutils literal notranslate"><span class="pre">Lmin</span> <span class="pre">=</span> <span class="pre">0</span></code> the maximum step size is the same
+<dt><strong>Lmin</strong><span class="classifier">positive float</span></dt><dd><p>Controls the stepsize in the NPG algorithm. For the default  
+<code class="docutils literal notranslate"><span class="pre">Lmin</span> <span class="pre">=</span> <span class="pre">0</span></code> the maximum step size is the same
 as for the FISTA algorithm.</p>
 </dd>
-<dt><strong>lse</strong><span class="classifier">bool</span></dt><dd><p>indicating whether to use log sum exp-loss.  TRUE is
+<dt><strong>lse</strong><span class="classifier">bool</span></dt><dd><p>Indicates if log sum exp-loss is used.  TRUE is
 default and yields the loss below.</p>
 </dd>
-<dt><strong>nthreads</strong><span class="classifier">pos int</span></dt><dd><p>giving the number of threads to use when  openMP  is available.</p>
+<dt><strong>nthreads</strong><span class="classifier">pos int</span></dt><dd><p>The number of threads to use when  openMP  is available.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>spec</strong><span class="classifier">string</span></dt><dd><p>contains specifications of the model fitted by the function call</p>
+<dt><strong>spec</strong><span class="classifier">string</span></dt><dd><p>Specifications of the model fitted by the function call.</p>
 </dd>
-<dt><strong>coef</strong><span class="classifier">array</span></dt><dd><p>A math:<cite>p times`nlamb matrix containing the
-estimates of the model coefficients (  :math:`beta</cite>) for each   <code class="docutils literal notranslate"><span class="pre">lamb</span></code>-value
+<dt><strong>coef</strong><span class="classifier">list or np.array</span></dt><dd><p>A <span class="math notranslate nohighlight">\(p \times\)</span> <code class="docutils literal notranslate"><span class="pre">nlamb</span></code> matrix containing the
+estimates of the model coefficients for each   <code class="docutils literal notranslate"><span class="pre">lamb</span></code>-value
 for which the procedure converged. When   <code class="docutils literal notranslate"><span class="pre">len(zeta)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>
 a   <code class="docutils literal notranslate"><span class="pre">len(zeta)</span></code>-list of such matrices.</p>
 </dd>
-<dt><strong>lamb</strong><span class="classifier">Array</span></dt><dd><p>containing the sequence of penalty values used
+<dt><strong>lamb</strong><span class="classifier">list or np.array</span></dt><dd><p>The sequence of penalty values used
 in the estimation procedure for which the procedure converged.
 When   <code class="docutils literal notranslate"><span class="pre">len(zeta)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> a   <code class="docutils literal notranslate"><span class="pre">len(zeta)</span></code>-list of such vectors.</p>
 </dd>
-<dt><strong>Obj</strong><span class="classifier">array</span></dt><dd><p>containing the objective values for each
+<dt><strong>Obj</strong><span class="classifier">list or np.array</span></dt><dd><p>The objective values for each
 iteration and each model for which the procedure converged.
 When   <code class="docutils literal notranslate"><span class="pre">len(zeta)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> a   <code class="docutils literal notranslate"><span class="pre">len(zeta)</span></code>-list of such matrices.</p>
 </dd>
-<dt><strong>df</strong><span class="classifier">array</span></dt><dd><p>Indicating the nonzero model coefficients for each
+<dt><strong>df</strong><span class="classifier">list or np.array</span></dt><dd><p>Vector containing the nonzero model coefficients (degrees of freedom) for each
 value of   <code class="docutils literal notranslate"><span class="pre">lamb</span></code> for which the procedure converged. When
 <code class="docutils literal notranslate"><span class="pre">len(zeta)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> a   <code class="docutils literal notranslate"><span class="pre">len(zeta)</span></code>-list of such vectors.</p>
 </dd>
 <dt><strong>dimcoef</strong><span class="classifier">int or np.array</span></dt><dd><p>Indicating the number <span class="math notranslate nohighlight">\(p\)</span> of model parameters.
-For array data a vector giving the dimension of the model coefficient array <span class="math notranslate nohighlight">\(\beta\)</span></p>
+For array data a vector giving the dimension of the model coefficient array.</p>
 </dd>
-<dt><strong>dimobs</strong><span class="classifier">integer</span></dt><dd><p>The number of observations. For array data a vector giving the number of  observations in each dimension.</p>
+<dt><strong>dimobs</strong><span class="classifier">int or np.array</span></dt><dd><p>The number of observations. For array data a vector giving the number of  
+observations in each dimension.</p>
 </dd>
-<dt><strong>dimmodel</strong><span class="classifier">int</span></dt><dd><p>The dimension of the array model. <code class="docutils literal notranslate"><span class="pre">None</span></code> for general models.</p>
+<dt><strong>dimmodel</strong><span class="classifier">int or None</span></dt><dd><p>The dimension of the array model. <code class="docutils literal notranslate"><span class="pre">None</span></code> for general models.</p>
 </dd>
-<dt><strong>iter</strong><span class="classifier">np.array</span></dt><dd><p>The  number of  iterations for each <code class="docutils literal notranslate"><span class="pre">lamb</span></code> value for which the procedure converged. When
-<code class="docutils literal notranslate"><span class="pre">len(zeta)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> a   <code class="docutils literal notranslate"><span class="pre">len(zeta)</span></code>-list of such vectors. <code class="docutils literal notranslate"><span class="pre">bt_iter</span></code>  is total 
-number of backtracking steps performed,
-<code class="docutils literal notranslate"><span class="pre">bt_enter</span></code> is the number of times the backtracking is initiated,
-and   <code class="docutils literal notranslate"><span class="pre">iter</span></code> is a vector containing the  number of  iterations for each
-<code class="docutils literal notranslate"><span class="pre">lamb</span></code> value and    <code class="docutils literal notranslate"><span class="pre">iter</span></code> is total number of iterations. TODO!!! notoutputted</p>
+<dt><strong>operations</strong><span class="classifier">dict</span></dt><dd><p>Key <code class="docutils literal notranslate"><span class="pre">iter</span></code> is a vector containing the number of  iterations for each
+<code class="docutils literal notranslate"><span class="pre">lamb</span></code> value for which the algorithm converged. When <code class="docutils literal notranslate"><span class="pre">len(zeta)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> a   
+<code class="docutils literal notranslate"><span class="pre">len(zeta)</span></code>-list of such vectors. Key <code class="docutils literal notranslate"><span class="pre">bt_iter</span></code>  is a  <code class="docutils literal notranslate"><span class="pre">len(zeta)</span></code> vector
+with total number of backtracking steps performed across all (converged) <code class="docutils literal notranslate"><span class="pre">lamb</span></code> values 
+for given <code class="docutils literal notranslate"><span class="pre">zeta</span></code> value. Key <code class="docutils literal notranslate"><span class="pre">bt_enter</span></code> is a  <code class="docutils literal notranslate"><span class="pre">len(zeta)</span></code> vector
+with total number of times backtracking is initiated across all (converged) <code class="docutils literal notranslate"><span class="pre">lamb</span></code> values 
+for given <code class="docutils literal notranslate"><span class="pre">zeta</span></code> value.</p>
 </dd>
 </dl>
 </dd>
@@ -311,7 +310,7 @@ coefficient vector, <span class="math notranslate nohighlight">\(\mathbf{X}_g\)<
 <span class="math notranslate nohighlight">\(\epsilon_g\)</span> an <span class="math notranslate nohighlight">\(n_g\times 1\)</span> error term. The objective is to estimate
 a common coefficient <span class="math notranslate nohighlight">\(\beta\)</span> such that <span class="math notranslate nohighlight">\(\mathbf{X}_g\beta\)</span> is a robust
 and good approximation to <span class="math notranslate nohighlight">\(\mathbf{X}_gb_g\)</span> across groups.</p>
-<p>Following [1], this objective may be accomplished by
+<p>Following <a class="reference internal" href="#r1b89a25bbb8d-1" id="id1">[1]</a>, this objective may be accomplished by
 solving the soft maximin estimation problem</p>
 <div class="math notranslate nohighlight">
 \[\min_{\beta}\frac{1}{\zeta}\log\bigg(\sum_{g = 1}^G \exp(-\zeta \hat V_g(\beta))\bigg) + \lambda  \Vert\beta\Vert_1, \quad \zeta &gt; 0,\lambda \geq 0.\]</div>
@@ -319,7 +318,7 @@ solving the soft maximin estimation problem</p>
 (<span class="math notranslate nohighlight">\(\zeta \sim 0\)</span> effectively ignores grouping and pools observations) and</p>
 <div class="math notranslate nohighlight">
 \[\hat V_g(\beta):=\frac{1}{n_g}(2\beta^\top \mathbf{X}_g^\top \mathbf{y}_g -\beta^\top \mathbf{X}_g^\top \mathbf{X}_g\beta),\]</div>
-<p>is the empirical explained variance, see [2] for more
+<p>is the empirical explained variance, see <a class="reference internal" href="#r1b89a25bbb8d-1" id="id2">[1]</a> for more
 details and references.</p>
 <p>The function  <code class="docutils literal notranslate"><span class="pre">softmaximin</span></code> solves the soft maximin estimation problem in
 large scale settings for a sequence of penalty parameters
@@ -352,9 +351,9 @@ to compute multiplications involving <span class="math notranslate nohighlight">
 distribute the computations across CPUs if openMP is available.</p>
 <p class="rubric">References</p>
 <dl class="citation">
-<dt class="label" id="r1b89a25bbb8d-1"><span class="brackets">1</span></dt>
+<dt class="label" id="r1b89a25bbb8d-1"><span class="brackets">1</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span></dt>
 <dd><p>Lund, A., S. W. Mogensen and N. R. Hansen (2022). Soft Maximin Estimation for
-Heterogeneous Data. Scandinavian Journal of Statistics. url = {<a class="reference external" href="https://doi.org/10.1111/sjos.12580">https://doi.org/10.1111/sjos.12580</a>}</p>
+Heterogeneous Data. Scandinavian Journal of Statistics. url = <a class="reference external" href="https://doi.org/10.1111/sjos.12580">https://doi.org/10.1111/sjos.12580</a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -487,11 +486,11 @@ Heterogeneous Data. Scandinavian Journal of Statistics. url = {<a class="referen
 <span class="sig-prename descclassname"><span class="pre">pysmme.transforms.</span></span><span class="sig-name descname"><span class="pre">RH</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmme.transforms.RH" title="Permalink to this definition">¶</a></dt>
 <dd><p>The Rotated H-transform of a 3d Array by a Matrix.</p>
 <p>This function is an implementation of the <span class="math notranslate nohighlight">\(\rho\)</span>-operator found in
-{Currie et al 2006}. It forms the basis of the GLAM arithmetic.</p>
+(Currie et al, 2006). It forms the basis of the GLAM arithmetic.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>M</strong><span class="classifier">np.array</span></dt><dd><p>A <span class="math notranslate nohighlight">\({n \times p_1}\)</span> matrix.</p>
+<dt><strong>M</strong><span class="classifier">np.array</span></dt><dd><p>A <span class="math notranslate nohighlight">\(n \times p_1\)</span> matrix.</p>
 </dd>
 <dt><strong>A</strong><span class="classifier">np.array</span></dt><dd><p>A 3d array of size <span class="math notranslate nohighlight">\(p_1 \times p_2 \times p_3\)</span>.</p>
 </dd>
@@ -505,15 +504,15 @@ Heterogeneous Data. Scandinavian Journal of Statistics. url = {<a class="referen
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>For details see {Currie et al 2006} [2]. Note that this particular implementation
+<p>For details see (Currie et al, 2006) <a class="reference internal" href="#r37e8b8eec84f-2" id="id4">[2]</a>. Note that this particular implementation
 is not used in the  routines underlying the optimization procedure.</p>
 <p class="rubric">References</p>
 <dl class="citation">
-<dt class="label" id="r37e8b8eec84f-2"><span class="brackets">2</span></dt>
+<dt class="label" id="r37e8b8eec84f-2"><span class="brackets"><a class="fn-backref" href="#id4">2</a></span></dt>
 <dd><p>Currie, I. D., M. Durban, and P. H. C. Eilers (2006). Generalized linear
 array models with applications to multidimensional smoothing.
-{Journal of the Royal Statistical Society. Series B}. 68, 
-259-280. url = {<a class="reference external" href="http://dx.doi.org/10.1111/j.1467-9868.2006.00543.x">http://dx.doi.org/10.1111/j.1467-9868.2006.00543.x</a>}.</p>
+Journal of the Royal Statistical Society. Series B. 68, 
+259-280. url = <a class="reference external" href="http://dx.doi.org/10.1111/j.1467-9868.2006.00543.x">http://dx.doi.org/10.1111/j.1467-9868.2006.00543.x</a>.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -539,24 +538,25 @@ array models with applications to multidimensional smoothing.
 <dt class="sig sig-object py" id="pysmme.transforms.iwt">
 <span class="sig-prename descclassname"><span class="pre">pysmme.transforms.</span></span><span class="sig-name descname"><span class="pre">iwt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'la8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmme.transforms.iwt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Discrete inverse wavelet transform.</p>
-<p>This function performs a level J wavelet transform of the input array (1d, 2d, or 3d) 
+<p>This function performs a level J wavelet transform of a dyadic input array (1d, 2d, or 3d) 
 using the pyramid algorithm (Mallat 1989). Implemented in C by Brandon Whithcer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>x</strong><span class="classifier">np.array</span></dt><dd><p>a 1, 2, or 3 dimensional data array. The size of each dimension must be dyadic.</p>
+<dt><strong>x</strong><span class="classifier">np.array</span></dt><dd><p>A 1, 2, or 3 dimensional data array. The size of each dimension must be dyadic.</p>
 </dd>
-<dt><strong>wf</strong><span class="classifier">string</span></dt><dd><p>the type of wavelet family used.</p>
+<dt><strong>wf</strong><span class="classifier">string</span></dt><dd><p>The type of wavelet family used. Options are <code class="docutils literal notranslate"><span class="pre">&quot;haar&quot;,</span> <span class="pre">&quot;d4&quot;,</span> <span class="pre">&quot;??&quot;,&quot;mb4&quot;,&quot;fk4&quot;,&quot;d6&quot;,&quot;fk6&quot;,</span> 
+<span class="pre">&quot;d8&quot;,&quot;fk8&quot;,</span> <span class="pre">&quot;la8&quot;,&quot;mb8&quot;,&quot;bl14&quot;,&quot;fk14&quot;,</span> <span class="pre">&quot;d16&quot;,&quot;la16&quot;,&quot;mb16&quot;,</span> <span class="pre">&quot;la20&quot;,&quot;bl20&quot;,&quot;fk22&quot;,</span> <span class="pre">&quot;mb24&quot;</span></code></p>
 </dd>
-<dt><strong>J</strong><span class="classifier">int</span></dt><dd><p>J is the level (depth) of the decomposition. For default None the max
-depth is used making  <code class="docutils literal notranslate"><span class="pre">wt(x)</span></code> equal to multiplying <code class="docutils literal notranslate"><span class="pre">x</span></code> with the
-corresponding wavelet matrix.</p>
+<dt><strong>J</strong><span class="classifier">int</span></dt><dd><p>The level (depth) of the decomposition. For default <code class="docutils literal notranslate"><span class="pre">None</span></code> the max
+depth is used and  <code class="docutils literal notranslate"><span class="pre">wt(x)</span></code> is equal to multiplying <code class="docutils literal notranslate"><span class="pre">x</span></code> with the
+corresponding inverse wavelet transform matrix.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt>np.array</dt><dd><p>np.array of shape identical to input x continant the transformed</p>
+<dt>np.array</dt><dd><p>Array with shape identical to input <code class="docutils literal notranslate"><span class="pre">x</span></code> containing the transform values.</p>
 </dd>
 </dl>
 </dd>
@@ -582,7 +582,8 @@ using the pyramid algorithm (Mallat 1989). Implemented in C by Brandon Whithcer.
 <dd class="field-odd"><dl class="simple">
 <dt><strong>x</strong><span class="classifier">np.array</span></dt><dd><p>A 1, 2, or 3 dimensional data array. The size of each dimension must be dyadic.</p>
 </dd>
-<dt><strong>wf</strong><span class="classifier">string</span></dt><dd><p>The type of wavelet family used.</p>
+<dt><strong>wf</strong><span class="classifier">string</span></dt><dd><p>The type of wavelet family used. Options are 
+<code class="docutils literal notranslate"><span class="pre">&quot;haar&quot;,</span> <span class="pre">&quot;d4&quot;,</span> <span class="pre">&quot;??&quot;,&quot;mb4&quot;,&quot;fk4&quot;,&quot;d6&quot;,&quot;fk6&quot;,</span> <span class="pre">&quot;d8&quot;,&quot;fk8&quot;,</span> <span class="pre">&quot;la8&quot;,&quot;mb8&quot;,&quot;bl14&quot;,&quot;fk14&quot;,</span> <span class="pre">&quot;d16&quot;,&quot;la16&quot;,&quot;mb16&quot;,</span> <span class="pre">&quot;la20&quot;,&quot;bl20&quot;,&quot;fk22&quot;,</span> <span class="pre">&quot;mb24&quot;</span></code></p>
 </dd>
 <dt><strong>J</strong><span class="classifier">int</span></dt><dd><p>J is the level (depth) of the decomposition. For default None the max
 depth is used and  <code class="docutils literal notranslate"><span class="pre">wt(x)</span></code> is equal to multiplying <code class="docutils literal notranslate"><span class="pre">x</span></code> with the
@@ -592,7 +593,7 @@ corresponding wavelet matrix.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt>np.array</dt><dd><p>np.array of shape identical to input x continant the transformed x</p>
+<dt>np.array</dt><dd><p>Array with shape identical to input <code class="docutils literal notranslate"><span class="pre">x</span></code> containing the transform values.</p>
 </dd>
 </dl>
 </dd>
@@ -602,8 +603,8 @@ corresponding wavelet matrix.</p>
 discrete wavelet transform. Given a data array (1d, 2d or 3d) with dyadic
 dimensions sizes this transform is computed efficiently via the pyramid
 algorithm using C routines from  Brandon Whitcher’s Waveslim package for R, see
-Percival and Walden (2000); Gencay, Selcuk and Whitcher (2001).</p>
-<p>This functionality is used in the computations underlying {{softmaximin}}
+Percival and Walden (2000) ; Gencay, Selcuk and Whitcher (2001).</p>
+<p>This functionality is used in the computations underlying <code class="docutils literal notranslate"><span class="pre">pysmme.tools.softmaximin</span></code>
 to perform multiplications involving the wavelet (design) matrix efficiently.</p>
 <p class="rubric">References</p>
 <dl class="citation">
