@@ -140,7 +140,7 @@ computations. Multi-threading is possible when openMP is available."""
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
     name="pysmme",
-    version="1.0,1",
+    version="1.0",
     license= "mit",
     classifiers=classifiers,
     author="Adam Lund",

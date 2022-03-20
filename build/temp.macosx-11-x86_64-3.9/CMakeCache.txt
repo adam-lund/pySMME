@@ -303,7 +303,7 @@ ENABLE_ARMA_EXTRA_DEBUG:BOOL=OFF
 ENABLE_ARMA_NO_DEBUG:BOOL=OFF
 
 //No help, variable specified on the command line.
-EXAMPLE_VERSION_INFO:UNINITIALIZED=1.0-1
+EXAMPLE_VERSION_INFO:UNINITIALIZED=1.0
 
 //Directory under which to collect all populated content
 FETCHCONTENT_BASE_DIR:PATH=/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/_deps

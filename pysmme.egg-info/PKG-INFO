@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: pysmme
-Version: 1.0-1
+Version: 1.0
 Summary: Soft maximin estimation in Python
 Home-page: https://adam-lund.github.io
 Author: Adam Lund
