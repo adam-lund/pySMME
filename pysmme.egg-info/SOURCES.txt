@@ -7,5 +7,4 @@ pysmme.egg-info/PKG-INFO
 pysmme.egg-info/SOURCES.txt
 pysmme.egg-info/dependency_links.txt
 pysmme.egg-info/not-zip-safe
-pysmme.egg-info/requires.txt
 pysmme.egg-info/top_level.txt

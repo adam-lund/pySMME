@@ -50,8 +50,8 @@ speed up computations.</p>
 <p>Multi-threading is possible when openMP is available.</p>
 <section id="module-pysmme.tools">
 <span id="pysmme-tools-module"></span><h2>pysmme.tools module<a class="headerlink" href="#module-pysmme.tools" title="Permalink to this headline">¶</a></h2>
-<p>This module contains functionality for i) solving (fitting, calibrating) the soft 
-maximin problem and ii) predicting from this fitted solution (model).</p>
+<p>This module contains functionality for i) solving (fitting, calibrating…) the soft 
+maximin problem and ii) predicting from this solution (fitted model).</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pysmme.tools.predict">
 <span class="sig-prename descclassname"><span class="pre">pysmme.tools.</span></span><span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmme.tools.predict" title="Permalink to this definition">¶</a></dt>
@@ -288,7 +288,7 @@ observations in each dimension.</p>
 </dd>
 <dt><strong>dimmodel</strong><span class="classifier">int or None</span></dt><dd><p>The dimension of the array model. <code class="docutils literal notranslate"><span class="pre">None</span></code> for general models.</p>
 </dd>
-<dt><strong>operations</strong><span class="classifier">dict</span></dt><dd><p>Key <code class="docutils literal notranslate"><span class="pre">iter</span></code> is a vector containing the number of  iterations for each
+<dt><strong>diagnostics</strong><span class="classifier">dict</span></dt><dd><p>Key <code class="docutils literal notranslate"><span class="pre">iter</span></code> is a vector containing the number of  iterations for each
 <code class="docutils literal notranslate"><span class="pre">lamb</span></code> value for which the algorithm converged. When <code class="docutils literal notranslate"><span class="pre">len(zeta)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> a   
 <code class="docutils literal notranslate"><span class="pre">len(zeta)</span></code>-list of such vectors. Key <code class="docutils literal notranslate"><span class="pre">bt_iter</span></code>  is a  <code class="docutils literal notranslate"><span class="pre">len(zeta)</span></code> vector
 with total number of backtracking steps performed across all (converged) <code class="docutils literal notranslate"><span class="pre">lamb</span></code> values 
