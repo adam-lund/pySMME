@@ -61,7 +61,7 @@
 
 
 \title{pysmme}
-\date{Mar 10, 2022}
+\date{Mar 20, 2022}
 \release{1.0}
 \author{Adam Lund}
 \newcommand{\sphinxlogo}{\vbox{}}
@@ -83,43 +83,65 @@
 
 \section{pysmme package}
 \label{\detokenize{pysmme:pysmme-package}}\label{\detokenize{pysmme::doc}}
+\sphinxAtStartPar
+Efficient procedure for solving the Lasso or SCAD penalized soft maximin problem.
+
+\sphinxAtStartPar
+This software implements two proximal
+gradient based algorithms (NPG and FISTA) to solve two different forms of the soft
+maximin problem from Lund et al., 2022 see {[}1{]} \sphinxurl{https://doi.org/10.1111/sjos.12580}:
+
+\sphinxAtStartPar
+1) For general group specific design the soft maximin problem is solved using the
+NPG algorithm.
+
+\sphinxAtStartPar
+2) For fixed identical design across groups, the estimation procedure uses
+either the FISTA algorithm or the NPG algorithm in the following two cases:
+i) For a tensor design matrix the algorithms use array arithmetic  to
+avoid the design matrix and speed computations ii) For a wavelet based design
+matrix the algorithms use the pyramid algorithm to avoid the design matrix and
+speed up computations.
+
+\sphinxAtStartPar
+Multi\sphinxhyphen{}threading is possible when openMP is available.
+
 
 \subsection{pysmme.tools module}
 \label{\detokenize{pysmme:module-pysmme.tools}}\label{\detokenize{pysmme:pysmme-tools-module}}\index{module@\spxentry{module}!pysmme.tools@\spxentry{pysmme.tools}}\index{pysmme.tools@\spxentry{pysmme.tools}!module@\spxentry{module}}
 \sphinxAtStartPar
-This module contains functionality for i) solving (fitting, calibrating) the soft maximin problem 
-and ii) predicting from this fitted solution (model).
+This module contains functionality for i) solving (fitting, calibrating…) the soft 
+maximin problem and ii) predicting from this solution (fitted model).
 \index{predict() (in module pysmme.tools)@\spxentry{predict()}\spxextra{in module pysmme.tools}}
 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{pysmme:pysmme.tools.predict}}\pysiglinewithargsret{\sphinxcode{\sphinxupquote{pysmme.tools.}}\sphinxbfcode{\sphinxupquote{predict}}}{\emph{\DUrole{n}{fit}}, \emph{\DUrole{n}{x}}}{}
 \sphinxAtStartPar
-Make Prediction From an smme Object.
+Make predictions from a fitted smme model.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{description}
 \item[{\sphinxstylestrong{fit}}] \leavevmode{[}smme\_dict{]}
 \sphinxAtStartPar
 The output from a \sphinxcode{\sphinxupquote{pysmme.tools.softmaximin}} call
 
-\item[{\sphinxstylestrong{x}}] \leavevmode{[}list, matrix or string{]}
+\item[{\sphinxstylestrong{x}}] \leavevmode{[}list, np.array or string{]}
 \sphinxAtStartPar
-an object that should be like the input to the \sphinxcode{\sphinxupquote{pysmme.tools.softmaximin}} call that 
+An object that should be like the input to the \sphinxcode{\sphinxupquote{pysmme.tools.softmaximin}} call that 
 produced the object \sphinxcode{\sphinxupquote{fit}}. For general  models a matrix
 with column dimension equal to that of  the original input. 
-For array models with custom design a list 
-and with wavelet design the name of the wavelet used.
+For array models with custom design a list like the one supplied to \sphinxcode{\sphinxupquote{softmaximin}} to produce \sphinxcode{\sphinxupquote{fit}}
+and for a wavelet design the name of the wavelet used to produce \sphinxcode{\sphinxupquote{fit}}.
 
 \end{description}
 
 \item[{Returns}] \leavevmode\begin{description}
 \item[{list}] \leavevmode
 \sphinxAtStartPar
-A list of length \sphinxcode{\sphinxupquote{len(zeta)}}. If \sphinxcode{\sphinxupquote{x}} is an \(k \times p\) matrix \sphinxcode{\sphinxupquote{x}}
-each list item is an \(k \times m_\zeta\) matrix containing the linear
-predictors computed for each model. If \sphinxcode{\sphinxupquote{x}} is a string or  a
-list of matrices each of size \(k_{i} \times p_i\),  each list item is an array
-of size \(k_1 \times \cdots \times k_d \times m_\zeta\),
-\(d\in \{1,2,3\}\), with the linear predictors computed for each model.
+A list of length \sphinxcode{\sphinxupquote{len(zeta)}}. If \sphinxcode{\sphinxupquote{x}} is a \(k \times p\) matrix 
+each list item is a \(k \times m_\zeta\) matrix containing the linear
+predictors computed for each \sphinxcode{\sphinxupquote{lamb}}. If \sphinxcode{\sphinxupquote{x}} is a string or  a
+list of matrices and \sphinxcode{\sphinxupquote{fit{[}"dimmodel"{]} = d}},  each list item is a \(d + 1\) array 
+containing predictions computed for each \sphinxcode{\sphinxupquote{lamb}}.
 
 \end{description}
 
@@ -127,14 +149,14 @@ of size \(k_1 \times \cdots \times k_d \times m_\zeta\),
 \subsubsection*{Notes}
 
 \sphinxAtStartPar
-Given input \sphinxcode{\sphinxupquote{x}} data this function computes the linear predictors
-using the fitted model coefficients supplied in  the \sphinxcode{\sphinxupquote{object}} which should be produced by  
-\sphinxcode{\sphinxupquote{softmaximin}}. If \sphinxcode{\sphinxupquote{object}} is the result of fitting general type model  
+Given input \sphinxcode{\sphinxupquote{fit}} and \sphinxcode{\sphinxupquote{x}}, this function computes the linear predictors
+using the fitted model coefficients supplied in  \sphinxcode{\sphinxupquote{fit}}  produced by  
+\sphinxcode{\sphinxupquote{softmaximin}}. If \sphinxcode{\sphinxupquote{fit}} is the result of fitting general type model  
 \sphinxcode{\sphinxupquote{x}} should be a \(k \times p\) matrix (\(p\) is the number of model
 coefficients and \(k\) is the number of new data points). 
-If \sphinxcode{\sphinxupquote{object}} is the result of fitting a model with tensor design \sphinxtitleref{x\textasciigrave{}} should be a list containing 
-\(k_i \times p_i, i = 1, 2, 3\) matrices 
-(\(k_i\) is the number of new marginal data points in the \(i\).
+If \sphinxcode{\sphinxupquote{fit}} is the result of fitting a model with tensor design, \sphinxcode{\sphinxupquote{x}} should be a list containing 
+\(k_i \times p_i, i = 1, 2, 3\) matrices (\(k_i\) is the number of new marginal 
+data points in the \(i\) th dimension) or a string indicating the wavelet used to produce \sphinxcode{\sphinxupquote{fit}}.
 \subsubsection*{Examples}
 
 \sphinxAtStartPar
@@ -282,24 +304,9 @@ If \sphinxcode{\sphinxupquote{object}} is the result of fitting a model with ten
 \index{softmaximin() (in module pysmme.tools)@\spxentry{softmaximin()}\spxextra{in module pysmme.tools}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{pysmme:pysmme.tools.softmaximin}}\pysiglinewithargsret{\sphinxcode{\sphinxupquote{pysmme.tools.}}\sphinxbfcode{\sphinxupquote{softmaximin}}}{\emph{\DUrole{n}{y}}, \emph{\DUrole{n}{x}}, \emph{\DUrole{n}{zeta}}, \emph{\DUrole{n}{penalty}}, \emph{\DUrole{n}{alg}}, \emph{\DUrole{n}{nlamb}\DUrole{o}{=}\DUrole{default_value}{30}}, \emph{\DUrole{n}{lamb\_min\_ratio}\DUrole{o}{=}\DUrole{default_value}{0.0001}}, \emph{\DUrole{n}{lamb}\DUrole{o}{=}\DUrole{default_value}{None}}, \emph{\DUrole{n}{scale\_y}\DUrole{o}{=}\DUrole{default_value}{1}}, \emph{\DUrole{n}{penalty\_factor}\DUrole{o}{=}\DUrole{default_value}{None}}, \emph{\DUrole{n}{reltol}\DUrole{o}{=}\DUrole{default_value}{1e\sphinxhyphen{}05}}, \emph{\DUrole{n}{maxiter}\DUrole{o}{=}\DUrole{default_value}{1000}}, \emph{\DUrole{n}{steps}\DUrole{o}{=}\DUrole{default_value}{1}}, \emph{\DUrole{n}{btmax}\DUrole{o}{=}\DUrole{default_value}{100}}, \emph{\DUrole{n}{c}\DUrole{o}{=}\DUrole{default_value}{0.0001}}, \emph{\DUrole{n}{tau}\DUrole{o}{=}\DUrole{default_value}{2}}, \emph{\DUrole{n}{M}\DUrole{o}{=}\DUrole{default_value}{4}}, \emph{\DUrole{n}{nu}\DUrole{o}{=}\DUrole{default_value}{1}}, \emph{\DUrole{n}{Lmin}\DUrole{o}{=}\DUrole{default_value}{0}}, \emph{\DUrole{n}{lse}\DUrole{o}{=}\DUrole{default_value}{True}}, \emph{\DUrole{n}{nthreads}\DUrole{o}{=}\DUrole{default_value}{4}}}{}
+\phantomsection\label{\detokenize{pysmme:pysmme.tools.softmaximin}}\pysiglinewithargsret{\sphinxcode{\sphinxupquote{pysmme.tools.}}\sphinxbfcode{\sphinxupquote{softmaximin}}}{\emph{\DUrole{n}{y}}, \emph{\DUrole{n}{x}}, \emph{\DUrole{n}{zeta}}, \emph{\DUrole{n}{penalty}}, \emph{\DUrole{n}{alg}}, \emph{\DUrole{n}{nlamb}\DUrole{o}{=}\DUrole{default_value}{30}}, \emph{\DUrole{n}{lamb\_min\_ratio}\DUrole{o}{=}\DUrole{default_value}{0.0001}}, \emph{\DUrole{n}{lamb}\DUrole{o}{=}\DUrole{default_value}{None}}, \emph{\DUrole{n}{penalty\_factor}\DUrole{o}{=}\DUrole{default_value}{None}}, \emph{\DUrole{n}{scale\_y}\DUrole{o}{=}\DUrole{default_value}{1}}, \emph{\DUrole{n}{reltol}\DUrole{o}{=}\DUrole{default_value}{1e\sphinxhyphen{}05}}, \emph{\DUrole{n}{maxiter}\DUrole{o}{=}\DUrole{default_value}{1000}}, \emph{\DUrole{n}{steps}\DUrole{o}{=}\DUrole{default_value}{1}}, \emph{\DUrole{n}{btmax}\DUrole{o}{=}\DUrole{default_value}{100}}, \emph{\DUrole{n}{c}\DUrole{o}{=}\DUrole{default_value}{0.0001}}, \emph{\DUrole{n}{tau}\DUrole{o}{=}\DUrole{default_value}{2}}, \emph{\DUrole{n}{M}\DUrole{o}{=}\DUrole{default_value}{4}}, \emph{\DUrole{n}{nu}\DUrole{o}{=}\DUrole{default_value}{1}}, \emph{\DUrole{n}{Lmin}\DUrole{o}{=}\DUrole{default_value}{0}}, \emph{\DUrole{n}{lse}\DUrole{o}{=}\DUrole{default_value}{True}}, \emph{\DUrole{n}{nthreads}\DUrole{o}{=}\DUrole{default_value}{4}}}{}
 \sphinxAtStartPar
-Efficient procedure for solving the Lasso or SCAD penalized soft maximin problem.
-
-\sphinxAtStartPar
-This software implements two proximal
-gradient based algorithms (NPG and FISTA) to solve different forms of the soft
-maximin problem from Lund et al., 2022 see {[}1{]}. 1) For general group specific
-design the soft maximin problem is solved using the NPG algorithm.
-2) For fixed identical design across groups, the estimation procedure uses 
-either the FISTA algorithm or the NPG algorithm in the following two cases:
-i) For a tensor design matrix the algorithms use array arithmetic  to 
-avoid the design matrix and speed computations ii) For a wavelet based design 
-matrix the algorithms use the pyramid algorithm to avoid the design matrix and speed up
-computations.
-
-\sphinxAtStartPar
-Multi\sphinxhyphen{}threading is possible when openMP is available.
+Function for solving the soft maximin estimation problem
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{description}
 \item[{\sphinxstylestrong{y}}] \leavevmode{[}list of arrays or array{]}
@@ -312,155 +319,156 @@ an array of size \(n_1 \times\cdots\times n_d \times G\) (\(d \in \{ 1, 2, 3\}\)
 \item[{\sphinxstylestrong{x}}] \leavevmode{[}list of arrays or string{]}
 \sphinxAtStartPar
 For a model with varying design across groups a list containing the 
-\(G\) group specific design matrices of sizes \(n_i \times p_i\).  
+\(G\) group specific design matrices of sizes \(n_i \times p\).  
 For a model with identical design across \(G\) groups, either i) a list containing the 
 \(d \in \{ 1, 2, 3\}\) marginal design matrices (tensor components) or ii) 
 a string indicating the type of wavelets to be used, see \sphinxcode{\sphinxupquote{pysmme.transforms.wt}} for options.
 
 \item[{\sphinxstylestrong{zeta}}] \leavevmode{[}array of strictly positive floats{]}
 \sphinxAtStartPar
-controls  the soft maximin approximation accuracy. When \sphinxcode{\sphinxupquote{len(zeta) \textgreater{} 1}} 
+Controls  the soft maximin approximation accuracy. When \sphinxcode{\sphinxupquote{len(zeta) \textgreater{} 1}} 
 the procedure will distribute
 the computations using the   \sphinxcode{\sphinxupquote{nthreads}} parameter below when openMP is available.
 
 \item[{\sphinxstylestrong{penalty}}] \leavevmode{[}string{]}
 \sphinxAtStartPar
-specifies the penalty type. Possible values are \sphinxcode{\sphinxupquote{lasso, scad}}.
+Specifies the penalty type. Possible values are \sphinxcode{\sphinxupquote{lasso, scad}}.
 
 \item[{\sphinxstylestrong{alg}}] \leavevmode{[}string{]}
 \sphinxAtStartPar
-specifies the optimization algorithm. Possible values are \sphinxcode{\sphinxupquote{npg, fista}}.
+Specifies the optimization algorithm. Possible values are \sphinxcode{\sphinxupquote{npg, fista}}.
 
 \item[{\sphinxstylestrong{nlambda}}] \leavevmode{[}strictly positive int{]}
 \sphinxAtStartPar
-The number of \sphinxcode{\sphinxupquote{lamb}} values used when lamb is not specified.
+The number of \sphinxcode{\sphinxupquote{lamb}} values to use when \sphinxcode{\sphinxupquote{lamb}} is not specified.
 
 \item[{\sphinxstylestrong{lamb\_min\_ratio}}] \leavevmode{[}strictly positive float{]}
 \sphinxAtStartPar
-controls minimum \sphinxcode{\sphinxupquote{lamb}} values by setting the ratio bewtween 
+Controls the minimum \sphinxcode{\sphinxupquote{lamb}} value by setting the ratio bewtween 
 \(\lambda_{max}\) \textendash{} the (data dependent) smallest value for which all 
-coefficients are zero \textendash{}  and the smallest value for \sphinxcode{\sphinxupquote{lamb}}.
-Used when lamb is not specified.
+coefficients are zero \textendash{}  and the smallest value of \sphinxcode{\sphinxupquote{lamb}}.
+Used when \sphinxcode{\sphinxupquote{lamb}} is not specified.
 
 \item[{\sphinxstylestrong{lamb}}] \leavevmode{[}array of strictly positive floats{]}
 \sphinxAtStartPar
-used  as penalty parameters.
+Penalty parameters.
+
+\item[{\sphinxstylestrong{penalty\_factor}}] \leavevmode{[}np.array{]}
+\sphinxAtStartPar
+Positive floats  that are multiplied with the parameters to allow for
+differential penalization on the these. Same size and shape as the model 
+coefficient container (array or vector).
 
 \item[{\sphinxstylestrong{scale\_y}}] \leavevmode{[}strictly positive float{]}
 \sphinxAtStartPar
-that is the response   \sphinxcode{\sphinxupquote{y}} is multiplied with.
-
-\item[{\sphinxstylestrong{penalty\_factor}}] \leavevmode{[}array{]}
-\sphinxAtStartPar
-size \(p_1 \times \cdots \times p_d\) of positive floats. 
-Is multiplied with each element in   \sphinxcode{\sphinxupquote{lamb}} to allow
-differential penalization on the coefficients.
+Scaling factor for the response   \sphinxcode{\sphinxupquote{y}}. To temper potential overflows.
 
 \item[{\sphinxstylestrong{reltol}}] \leavevmode{[}strictly positive float{]}
 \sphinxAtStartPar
-giving the convergence tolerance for the inner loop.
+Convergence tolerance for the proximal algorithm.
 
 \item[{\sphinxstylestrong{maxiter}}] \leavevmode{[}positive int{]}
 \sphinxAtStartPar
-giving the maximum number of  iterations
+The maximum number of  iterations
 allowed for each   \sphinxcode{\sphinxupquote{lamb}} value, when  summing over all outer iterations
 for said   \sphinxcode{\sphinxupquote{lamb}}.
 
 \item[{\sphinxstylestrong{steps}}] \leavevmode{[}strictly positive int{]}
 \sphinxAtStartPar
-giving the number of steps used in the
-multi\sphinxhyphen{}step adaptive lasso algorithm for non\sphinxhyphen{}convex penalties. Automatically
-set to 1 when   \sphinxcode{\sphinxupquote{penalty = "lasso"}}.
+The number of steps used in the multi\sphinxhyphen{}step adaptive lasso algorithm for 
+non\sphinxhyphen{}convex penalties. Automatically  set to 1 when   \sphinxcode{\sphinxupquote{penalty = "lasso"}}.
 
-\item[{\sphinxstylestrong{btmax}}] \leavevmode{[}strictly positive integer giving the maximum number of backtracking{]}
+\item[{\sphinxstylestrong{btmax}}] \leavevmode{[}strictly positive integer{]}
 \sphinxAtStartPar
-steps allowed in each iteration.
+The maximum number of backtracking steps allowed in each iteration.
 
 \item[{\sphinxstylestrong{c}}] \leavevmode{[}strictly positive float{]}
 \sphinxAtStartPar
-used in the NPG algorithm.
+Used in the NPG algorithm.
 
 \item[{\sphinxstylestrong{tau}}] \leavevmode{[}strictly positive float{]}
 \sphinxAtStartPar
-used to control the stepsize for NPG.
+Used to control the stepsize for NPG.
 
-\item[{\sphinxstylestrong{M}}] \leavevmode{[}pos int{]}
+\item[{\sphinxstylestrong{M}}] \leavevmode{[}positive int{]}
 \sphinxAtStartPar
-giving the look back for the NPG.
+The look back for the NPG.
 
-\item[{\sphinxstylestrong{nu}}] \leavevmode{[}strictly positive{]}
+\item[{\sphinxstylestrong{nu}}] \leavevmode{[}strictly positive float{]}
 \sphinxAtStartPar
-float used to control the stepsize in the proximal algorithm. A  value less than 1 will decrease 
+Ccontrols the stepsize in the proximal algorithm. A  value less than 1 will decrease 
 the stepsize and a value larger than one will increase it.
 
-\item[{\sphinxstylestrong{Lmin}}] \leavevmode{[}pos float{]}
+\item[{\sphinxstylestrong{Lmin}}] \leavevmode{[}positive float{]}
 \sphinxAtStartPar
-used by the NPG algorithm to control the
-stepsize. For the default  \sphinxcode{\sphinxupquote{Lmin = 0}} the maximum step size is the same
+Controls the stepsize in the NPG algorithm. For the default  
+\sphinxcode{\sphinxupquote{Lmin = 0}} the maximum step size is the same
 as for the FISTA algorithm.
 
 \item[{\sphinxstylestrong{lse}}] \leavevmode{[}bool{]}
 \sphinxAtStartPar
-indicating whether to use log sum exp\sphinxhyphen{}loss.  TRUE is
+Indicates if log sum exp\sphinxhyphen{}loss is used.  TRUE is
 default and yields the loss below.
 
 \item[{\sphinxstylestrong{nthreads}}] \leavevmode{[}pos int{]}
 \sphinxAtStartPar
-giving the number of threads to use when  openMP  is available.
+The number of threads to use when  openMP  is available.
 
 \end{description}
 
 \item[{Returns}] \leavevmode\begin{description}
 \item[{\sphinxstylestrong{spec}}] \leavevmode{[}string{]}
 \sphinxAtStartPar
-contains specifications of the model fitted by the function call
+Specifications of the model fitted by the function call.
 
-\item[{\sphinxstylestrong{coef}}] \leavevmode{[}array{]}
+\item[{\sphinxstylestrong{coef}}] \leavevmode{[}list or np.array{]}
 \sphinxAtStartPar
-A math:\sphinxtitleref{p times\textasciigrave{}nlamb matrix containing the
-estimates of the model coefficients (  :math:\textasciigrave{}beta}) for each   \sphinxcode{\sphinxupquote{lamb}}\sphinxhyphen{}value
+A \(p \times\) \sphinxcode{\sphinxupquote{nlamb}} matrix containing the
+estimates of the model coefficients for each   \sphinxcode{\sphinxupquote{lamb}}\sphinxhyphen{}value
 for which the procedure converged. When   \sphinxcode{\sphinxupquote{len(zeta) \textgreater{} 1}}
 a   \sphinxcode{\sphinxupquote{len(zeta)}}\sphinxhyphen{}list of such matrices.
 
-\item[{\sphinxstylestrong{lamb}}] \leavevmode{[}Array{]}
+\item[{\sphinxstylestrong{lamb}}] \leavevmode{[}list or np.array{]}
 \sphinxAtStartPar
-containing the sequence of penalty values used
+The sequence of penalty values used
 in the estimation procedure for which the procedure converged.
 When   \sphinxcode{\sphinxupquote{len(zeta) \textgreater{} 1}} a   \sphinxcode{\sphinxupquote{len(zeta)}}\sphinxhyphen{}list of such vectors.
 
-\item[{\sphinxstylestrong{Obj}}] \leavevmode{[}array{]}
+\item[{\sphinxstylestrong{Obj}}] \leavevmode{[}list or np.array{]}
 \sphinxAtStartPar
-containing the objective values for each
+The objective values for each
 iteration and each model for which the procedure converged.
 When   \sphinxcode{\sphinxupquote{len(zeta) \textgreater{} 1}} a   \sphinxcode{\sphinxupquote{len(zeta)}}\sphinxhyphen{}list of such matrices.
 
-\item[{\sphinxstylestrong{df}}] \leavevmode{[}array{]}
+\item[{\sphinxstylestrong{df}}] \leavevmode{[}list or np.array{]}
 \sphinxAtStartPar
-Indicating the nonzero model coefficients for each
+Vector containing the nonzero model coefficients (degrees of freedom) for each
 value of   \sphinxcode{\sphinxupquote{lamb}} for which the procedure converged. When
 \sphinxcode{\sphinxupquote{len(zeta) \textgreater{} 1}} a   \sphinxcode{\sphinxupquote{len(zeta)}}\sphinxhyphen{}list of such vectors.
 
 \item[{\sphinxstylestrong{dimcoef}}] \leavevmode{[}int or np.array{]}
 \sphinxAtStartPar
 Indicating the number \(p\) of model parameters.
-For array data a vector giving the dimension of the model coefficient array \(\beta\)
+For array data a vector giving the dimension of the model coefficient array.
 
-\item[{\sphinxstylestrong{dimobs}}] \leavevmode{[}integer{]}
+\item[{\sphinxstylestrong{dimobs}}] \leavevmode{[}int or np.array{]}
 \sphinxAtStartPar
-The number of observations. For array data a vector giving the number of  observations in each dimension.
+The number of observations. For array data a vector giving the number of  
+observations in each dimension.
 
-\item[{\sphinxstylestrong{dimmodel}}] \leavevmode{[}int{]}
+\item[{\sphinxstylestrong{dimmodel}}] \leavevmode{[}int or None{]}
 \sphinxAtStartPar
 The dimension of the array model. \sphinxcode{\sphinxupquote{None}} for general models.
 
-\item[{\sphinxstylestrong{iter}}] \leavevmode{[}np.array{]}
+\item[{\sphinxstylestrong{diagnostics}}] \leavevmode{[}dict{]}
 \sphinxAtStartPar
-The  number of  iterations for each \sphinxcode{\sphinxupquote{lamb}} value for which the procedure converged. When
-\sphinxcode{\sphinxupquote{len(zeta) \textgreater{} 1}} a   \sphinxcode{\sphinxupquote{len(zeta)}}\sphinxhyphen{}list of such vectors. \sphinxcode{\sphinxupquote{bt\_iter}}  is total 
-number of backtracking steps performed,
-\sphinxcode{\sphinxupquote{bt\_enter}} is the number of times the backtracking is initiated,
-and   \sphinxcode{\sphinxupquote{iter}} is a vector containing the  number of  iterations for each
-\sphinxcode{\sphinxupquote{lamb}} value and    \sphinxcode{\sphinxupquote{iter}} is total number of iterations. TODO!!! notoutputted
+Key \sphinxcode{\sphinxupquote{iter}} is a vector containing the number of  iterations for each
+\sphinxcode{\sphinxupquote{lamb}} value for which the algorithm converged. When \sphinxcode{\sphinxupquote{len(zeta) \textgreater{} 1}} a   
+\sphinxcode{\sphinxupquote{len(zeta)}}\sphinxhyphen{}list of such vectors. Key \sphinxcode{\sphinxupquote{bt\_iter}}  is a  \sphinxcode{\sphinxupquote{len(zeta)}} vector
+with total number of backtracking steps performed across all (converged) \sphinxcode{\sphinxupquote{lamb}} values 
+for given \sphinxcode{\sphinxupquote{zeta}} value. Key \sphinxcode{\sphinxupquote{bt\_enter}} is a  \sphinxcode{\sphinxupquote{len(zeta)}} vector
+with total number of times backtracking is initiated across all (converged) \sphinxcode{\sphinxupquote{lamb}} values 
+for given \sphinxcode{\sphinxupquote{zeta}} value.
 
 \end{description}
 
@@ -482,7 +490,7 @@ a common coefficient \(\beta\) such that \(\mathbf{X}_g\beta\) is a robust
 and good approximation to \(\mathbf{X}_gb_g\) across groups.
 
 \sphinxAtStartPar
-Following {[}1{]}, this objective may be accomplished by
+Following \sphinxcite{pysmme:r1b89a25bbb8d-1}, this objective may be accomplished by
 solving the soft maximin estimation problem
 \begin{equation*}
 \begin{split}\min_{\beta}\frac{1}{\zeta}\log\bigg(\sum_{g = 1}^G \exp(-\zeta \hat V_g(\beta))\bigg) + \lambda  \Vert\beta\Vert_1, \quad \zeta > 0,\lambda \geq 0.\end{split}
@@ -494,7 +502,7 @@ Here \(\zeta\) essentially controls the amount of pooling across groups
 \begin{split}\hat V_g(\beta):=\frac{1}{n_g}(2\beta^\top \mathbf{X}_g^\top \mathbf{y}_g -\beta^\top \mathbf{X}_g^\top \mathbf{X}_g\beta),\end{split}
 \end{equation*}
 \sphinxAtStartPar
-is the empirical explained variance, see {[}2{]} for more
+is the empirical explained variance, see \sphinxcite{pysmme:r1b89a25bbb8d-1} for more
 details and references.
 
 \sphinxAtStartPar
@@ -730,12 +738,12 @@ The Rotated H\sphinxhyphen{}transform of a 3d Array by a Matrix.
 
 \sphinxAtStartPar
 This function is an implementation of the \(\rho\)\sphinxhyphen{}operator found in
-\{Currie et al 2006\}. It forms the basis of the GLAM arithmetic.
+(Currie et al, 2006). It forms the basis of the GLAM arithmetic.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{description}
 \item[{\sphinxstylestrong{M}}] \leavevmode{[}np.array{]}
 \sphinxAtStartPar
-A \({n \times p_1}\) matrix.
+A \(n \times p_1\) matrix.
 
 \item[{\sphinxstylestrong{A}}] \leavevmode{[}np.array{]}
 \sphinxAtStartPar
@@ -754,7 +762,7 @@ A 3d array of size \(p_2 \times p_3 \times n\).
 \subsubsection*{Notes}
 
 \sphinxAtStartPar
-For details see \{Currie et al 2006\} {[}2{]}. Note that this particular implementation
+For details see (Currie et al, 2006) \sphinxcite{pysmme:r37e8b8eec84f-2}. Note that this particular implementation
 is not used in the  routines underlying the optimization procedure.
 \subsubsection*{References}
 
@@ -790,30 +798,31 @@ is not used in the  routines underlying the optimization procedure.
 Discrete inverse wavelet transform.
 
 \sphinxAtStartPar
-This function performs a level J wavelet transform of the input array (1d, 2d, or 3d) 
+This function performs a level J wavelet transform of a dyadic input array (1d, 2d, or 3d) 
 using the pyramid algorithm (Mallat 1989). Implemented in C by Brandon Whithcer.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{description}
 \item[{\sphinxstylestrong{x}}] \leavevmode{[}np.array{]}
 \sphinxAtStartPar
-a 1, 2, or 3 dimensional data array. The size of each dimension must be dyadic.
+A 1, 2, or 3 dimensional data array. The size of each dimension must be dyadic.
 
 \item[{\sphinxstylestrong{wf}}] \leavevmode{[}string{]}
 \sphinxAtStartPar
-the type of wavelet family used.
+The type of wavelet family used. Options are \sphinxcode{\sphinxupquote{"haar", "d4", "??","mb4","fk4","d6","fk6", 
+"d8","fk8", "la8","mb8","bl14","fk14", "d16","la16","mb16", "la20","bl20","fk22", "mb24"}}
 
 \item[{\sphinxstylestrong{J}}] \leavevmode{[}int{]}
 \sphinxAtStartPar
-J is the level (depth) of the decomposition. For default None the max
-depth is used making  \sphinxcode{\sphinxupquote{wt(x)}} equal to multiplying \sphinxcode{\sphinxupquote{x}} with the
-corresponding wavelet matrix.
+The level (depth) of the decomposition. For default \sphinxcode{\sphinxupquote{None}} the max
+depth is used and  \sphinxcode{\sphinxupquote{wt(x)}} is equal to multiplying \sphinxcode{\sphinxupquote{x}} with the
+corresponding inverse wavelet transform matrix.
 
 \end{description}
 
 \item[{Returns}] \leavevmode\begin{description}
 \item[{np.array}] \leavevmode
 \sphinxAtStartPar
-np.array of shape identical to input x continant the transformed
+Array with shape identical to input \sphinxcode{\sphinxupquote{x}} containing the transform values.
 
 \end{description}
 
@@ -851,7 +860,8 @@ A 1, 2, or 3 dimensional data array. The size of each dimension must be dyadic.
 
 \item[{\sphinxstylestrong{wf}}] \leavevmode{[}string{]}
 \sphinxAtStartPar
-The type of wavelet family used.
+The type of wavelet family used. Options are 
+\sphinxcode{\sphinxupquote{"haar", "d4", "??","mb4","fk4","d6","fk6", "d8","fk8", "la8","mb8","bl14","fk14", "d16","la16","mb16", "la20","bl20","fk22", "mb24"}}
 
 \item[{\sphinxstylestrong{J}}] \leavevmode{[}int{]}
 \sphinxAtStartPar
@@ -864,7 +874,7 @@ corresponding wavelet matrix.
 \item[{Returns}] \leavevmode\begin{description}
 \item[{np.array}] \leavevmode
 \sphinxAtStartPar
-np.array of shape identical to input x continant the transformed x
+Array with shape identical to input \sphinxcode{\sphinxupquote{x}} containing the transform values.
 
 \end{description}
 
@@ -876,10 +886,10 @@ This is a C++/Python wrapper function for a C implementation of the
 discrete wavelet transform. Given a data array (1d, 2d or 3d) with dyadic
 dimensions sizes this transform is computed efficiently via the pyramid
 algorithm using C routines from  Brandon Whitcher’s Waveslim package for R, see
-Percival and Walden (2000); Gencay, Selcuk and Whitcher (2001).
+Percival and Walden (2000) ; Gencay, Selcuk and Whitcher (2001).
 
 \sphinxAtStartPar
-This functionality is used in the computations underlying \{\{softmaximin\}\}
+This functionality is used in the computations underlying \sphinxcode{\sphinxupquote{pysmme.tools.softmaximin}}
 to perform multiplications involving the wavelet (design) matrix efficiently.
 \subsubsection*{References}
 
@@ -927,13 +937,13 @@ Root module of your package
 \bibitem[1]{pysmme:r1b89a25bbb8d-1}
 \sphinxAtStartPar
 Lund, A., S. W. Mogensen and N. R. Hansen (2022). Soft Maximin Estimation for
-Heterogeneous Data. Scandinavian Journal of Statistics. url = \{\sphinxurl{https://doi.org/10.1111/sjos.12580}\}
+Heterogeneous Data. Scandinavian Journal of Statistics. url = \sphinxurl{https://doi.org/10.1111/sjos.12580}
 \bibitem[2]{pysmme:r37e8b8eec84f-2}
 \sphinxAtStartPar
 Currie, I. D., M. Durban, and P. H. C. Eilers (2006). Generalized linear
 array models with applications to multidimensional smoothing.
-\{Journal of the Royal Statistical Society. Series B\}. 68, 
-259\sphinxhyphen{}280. url = \{\sphinxurl{http://dx.doi.org/10.1111/j.1467-9868.2006.00543.x}\}.
+Journal of the Royal Statistical Society. Series B. 68, 
+259\sphinxhyphen{}280. url = \sphinxurl{http://dx.doi.org/10.1111/j.1467-9868.2006.00543.x}.
 \bibitem[3]{pysmme:rf3008b54b32e-3}
 \sphinxAtStartPar
 Gencay, R., F. Selcuk and B. Whitcher (2001) An Introduction to Wavelets and
