@@ -1,5 +1,7 @@
 # File: docs/requirements.txt
 
+numpy
+matplotlib
 sphinx==4.4.0
 sphinx_rtd_theme==1.0.0
 readthedocs-sphinx-search==0.1.1
