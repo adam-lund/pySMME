@@ -22,7 +22,7 @@ SET(CARMA_INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}/carma")
 
 SET(DEFAULT_BUILD_TYPE "Release")
 # Set build type to Release if not specified
-INCLUDE(BuildType)
+#INCLUDE(BuildType)
 
 IF (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     # workaround like https://github.com/nlohmann/json/issues/1408
