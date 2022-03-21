@@ -1,4 +1,5 @@
 # File: docs/requirements.txt
+pysmme
 numpydoc
 numpy
 matplotlib
