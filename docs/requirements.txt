@@ -1,9 +1,9 @@
 # File: docs/requirements.txt
 #pysmme
-os
-re
-subprocess
-sys
+#os
+#re
+#subprocess
+#sys
 setuptools 
 numpydoc
 numpy
