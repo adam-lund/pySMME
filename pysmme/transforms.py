@@ -4,7 +4,8 @@ This module contains various transforms for computing fast matrix vector product
 """
 
 import numpy as np
-from ._smme import WT, IWT
+#from ._smme import WT, IWT
+import pysmme._smme
 
 def wt(x, wf = "la8", J = None):
  r"""Discrete wavelet transform.
@@ -78,7 +79,7 @@ def wt(x, wf = "la8", J = None):
   p3 = d[2]
  X = np.reshape(x, (p1, p2 * p3), order = "F")
 
- out = WT(X, dim, wf, J, p1, p2, p3) #p1 x p2 * p3
+ out = pysmme._smme.WT(X, dim, wf, J, p1, p2, p3) #p1 x p2 * p3
  #out <- drop(array(out, c(p1, p2, p3)))
  #if(is.null(dim(out))){out <- as.matrix(out)}
  return np.reshape(out, (p1, p2, p3), order = "F")
@@ -138,7 +139,7 @@ def iwt(x, wf = "la8", J = None):
  if(dim > 2):
   p3 = d[2]
  X = np.reshape(x, (p1, p2 * p3), order = "F")
- out = IWT(X, dim, wf, J, p1, p2, p3) #p1 x p2 * p3
+ out = pysmme._smme.IWT(X, dim, wf, J, p1, p2, p3) #p1 x p2 * p3
  #out <- drop(array(out, c(p1, p2, p3)))
  #if(is.null(dim(out))){out <- as.matrix(out)}
  return np.reshape(out, (p1, p2, p3), order = "F")
