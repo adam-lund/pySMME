@@ -15,6 +15,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "../../extern/carma/carma_config.cmake"
   "../../extern/carma/cmake/BuildType.cmake"
   "../../extern/carma/cmake/ClearOptions.cmake"
+  "../../extern/carma/cmake/GetArmadillo.cmake"
   "../../extern/carma/cmake/GetPybind11.cmake"
   "../../extern/carma/cmake/ParseOptions.cmake"
   "../../extern/carma/cmake/ThirdPartyTargets.cmake"
@@ -59,10 +60,6 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/usr/local/Cellar/cmake/3.22.1/share/cmake/Modules/Platform/Darwin.cmake"
   "/usr/local/Cellar/cmake/3.22.1/share/cmake/Modules/Platform/UnixPaths.cmake"
   "/usr/local/Cellar/cmake/3.22.1/share/cmake/Modules/WriteBasicConfigVersionFile.cmake"
-  "/usr/local/share/Armadillo/CMake/ArmadilloConfig.cmake"
-  "/usr/local/share/Armadillo/CMake/ArmadilloConfigVersion.cmake"
-  "/usr/local/share/Armadillo/CMake/ArmadilloLibraryDepends-noconfig.cmake"
-  "/usr/local/share/Armadillo/CMake/ArmadilloLibraryDepends.cmake"
   )
 
 # The corresponding makefile is:
@@ -75,6 +72,7 @@ set(CMAKE_MAKEFILE_OUTPUTS
 set(CMAKE_MAKEFILE_PRODUCTS
   "CMakeFiles/CMakeDirectoryInformation.cmake"
   "extern/carma/include/carma_bits/generated_config.h"
+  "_deps/carmaarmadillo-subbuild/CMakeLists.txt"
   "_deps/pybind11repo-subbuild/CMakeLists.txt"
   "extern/carma/CMakeFiles/CMakeDirectoryInformation.cmake"
   "extern/carma/extern/pybind11/CMakeFiles/CMakeDirectoryInformation.cmake"

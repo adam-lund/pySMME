@@ -316,11 +316,18 @@ FETCHCONTENT_FULLY_DISCONNECTED:BOOL=OFF
 FETCHCONTENT_QUIET:BOOL=ON
 
 //When not empty, overrides where to find pre-populated content
+// for CarmaArmadillo
+FETCHCONTENT_SOURCE_DIR_CARMAARMADILLO:PATH=
+
+//When not empty, overrides where to find pre-populated content
 // for Pybind11Repo
 FETCHCONTENT_SOURCE_DIR_PYBIND11REPO:PATH=
 
 //Enables UPDATE_DISCONNECTED behavior for all content population
 FETCHCONTENT_UPDATES_DISCONNECTED:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of CarmaArmadillo
+FETCHCONTENT_UPDATES_DISCONNECTED_CARMAARMADILLO:BOOL=OFF
 
 //Enables UPDATE_DISCONNECTED behavior just for population of Pybind11Repo
 FETCHCONTENT_UPDATES_DISCONNECTED_PYBIND11REPO:BOOL=OFF
@@ -346,6 +353,9 @@ PYBIND11_TEST:BOOL=OFF
 
 //No help, variable specified on the command line.
 PYTHON_EXECUTABLE:UNINITIALIZED=/usr/local/opt/python@3.9/bin/python3.9
+
+//Choose the version of Armadillo.
+USE_ARMA_VERSION:STRING=10.8.x
 
 //Choose the version of Pybind11.
 USE_PYBIND11_VERSION:STRING=v2.9.0
@@ -565,6 +575,8 @@ PYBIND11_PYTHON_EXECUTABLE_LAST:INTERNAL=/usr/local/Frameworks/Python.framework/
 //Python debug status
 PYTHON_IS_DEBUG:INTERNAL=0
 PYTHON_MODULE_EXTENSION:INTERNAL=.cpython-39-darwin.so
+//STRINGS property for variable: USE_ARMA_VERSION
+USE_ARMA_VERSION-STRINGS:INTERNAL=10.6.x;10.8.x
 //STRINGS property for variable: USE_PYBIND11_VERSION
 USE_PYBIND11_VERSION-STRINGS:INTERNAL=v2.6.0;v2.6.1;v2.6.2;v2.7.1;v2.8.1;v2.9.0
 //CMAKE_INSTALL_PREFIX during last run

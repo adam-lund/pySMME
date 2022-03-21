@@ -6,7 +6,7 @@ if (WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
 
-find_package(Armadillo "10.6" CONFIG REQUIRED)
+#find_package(Armadillo "10.6" CONFIG REQUIRED)
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development NumPy)
 
 #add_subdirectory(extern/pybind11)
