@@ -4,6 +4,7 @@
 #re
 #subprocess
 #sys
+cmake
 setuptools 
 numpydoc
 numpy
