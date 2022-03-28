@@ -14,6 +14,9 @@
 # EXTERNAL cache entries
 ########################
 
+//The directory containing a CMake configuration file for Armadillo.
+Armadillo_DIR:PATH=/usr/local/share/Armadillo/CMake
+
 //Build examples for carma
 CARMA_BUILD_EXAMPLES:BOOL=OFF
 
