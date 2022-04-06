@@ -8,7 +8,7 @@ endif()
 
 #without this next command we need the armadillo folder. seems always needs access
 #to github to update
-find_package(Armadillo "10.6" CONFIG REQUIRED) 
+#find_package(Armadillo "10.6" CONFIG REQUIRED) 
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development NumPy)
 
 #we dont need to add pybind11 probably because pybind11 is also in the carma dir  
