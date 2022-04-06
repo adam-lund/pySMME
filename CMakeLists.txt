@@ -6,9 +6,12 @@ if (WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
 
-#find_package(Armadillo "10.6" CONFIG REQUIRED)
+#without this next command we need the armadillo folder. seems always needs access
+#to github to update
+find_package(Armadillo "10.6" CONFIG REQUIRED) 
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development NumPy)
 
+#we dont need to add pybind11 probably because pybind11 is also in the carma dir  
 #add_subdirectory(extern/pybind11)
 add_subdirectory(extern/carma)
 pybind11_add_module(_smme src/bindings.cpp)
