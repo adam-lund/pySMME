@@ -4,7 +4,7 @@
 # compile CXX with /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++
 CXX_DEFINES = -DCARMA_USE_GENERATED_CONFIG=1 -DCARMA_VERSION_MAJOR=0 -DCARMA_VERSION_MINOR=6 -DCARMA_VERSION_NAME=0.6.3 -DCARMA_VERSION_PATCH=3 -DVERSION_INFO=1.0 -D_smme_EXPORTS
 
-CXX_INCLUDES = -I/Users/adam/Documents/Github/pysmme/extern/carma/include -I/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/extern/carma/include -I/Users/adam/Documents/Github/pysmme/extern/carma/extern/armadillo-code/include -isystem /usr/local/opt/python@3.9/Frameworks/Python.framework/Versions/3.9/include/python3.9 -isystem /Users/adam/Documents/Github/pysmme/extern/carma/extern/pybind11/include -isystem /usr/local/lib/python3.9/site-packages/numpy/core/include
+CXX_INCLUDES = -I/Users/adam/Documents/Github/pysmme/extern/carma/include -I/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/extern/carma/include -isystem /usr/local/opt/python@3.9/Frameworks/Python.framework/Versions/3.9/include/python3.9 -isystem /Users/adam/Documents/Github/pysmme/extern/carma/extern/pybind11/include -isystem /usr/local/include -isystem /usr/local/lib/python3.9/site-packages/numpy/core/include
 
 CXX_FLAGS = -O3 -DNDEBUG -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -fPIC -fvisibility=hidden -std=gnu++14
 

@@ -110,6 +110,9 @@ _smme_EXTERNAL_OBJECTS =
 ../lib.macosx-11-x86_64-3.9/pysmme/_smme.cpython-39-darwin.so: CMakeFiles/_smme.dir/cmake_pch.hxx.pch
 ../lib.macosx-11-x86_64-3.9/pysmme/_smme.cpython-39-darwin.so: CMakeFiles/_smme.dir/src/bindings.cpp.o
 ../lib.macosx-11-x86_64-3.9/pysmme/_smme.cpython-39-darwin.so: CMakeFiles/_smme.dir/build.make
+../lib.macosx-11-x86_64-3.9/pysmme/_smme.cpython-39-darwin.so: /usr/local/lib/libarmadillo.10.8.0.dylib
+../lib.macosx-11-x86_64-3.9/pysmme/_smme.cpython-39-darwin.so: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/libblas.tbd
+../lib.macosx-11-x86_64-3.9/pysmme/_smme.cpython-39-darwin.so: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/liblapack.tbd
 ../lib.macosx-11-x86_64-3.9/pysmme/_smme.cpython-39-darwin.so: CMakeFiles/_smme.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/adam/Documents/Github/pysmme/build/temp.macosx-11-x86_64-3.9/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX shared module ../lib.macosx-11-x86_64-3.9/pysmme/_smme.cpython-39-darwin.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/_smme.dir/link.txt --verbose=$(VERBOSE)

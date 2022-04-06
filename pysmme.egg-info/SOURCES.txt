@@ -180,6 +180,7 @@ extern/carma/extern/armadillo-code/.git/objects/04/212cec80b59eb31220e0456a10428
 extern/carma/extern/armadillo-code/.git/objects/04/802f530c05e479216b12e5303691cbbb958811
 extern/carma/extern/armadillo-code/.git/objects/11/99f80d2489aeb6bfeb4132a5712c6abb7f4c69
 extern/carma/extern/armadillo-code/.git/objects/14/94388eb7dea38e87bf66c7944bcc9de426b7ce
+extern/carma/extern/armadillo-code/.git/objects/15/0281c078730204770198deb398a75b2df2a86e
 extern/carma/extern/armadillo-code/.git/objects/18/53d7e53da9b94df47af4fe8808e4556c3d6485
 extern/carma/extern/armadillo-code/.git/objects/20/375dccb6d91504cc4c74cf18d4af1a4ad05980
 extern/carma/extern/armadillo-code/.git/objects/2b/c72468ff88e6feec9fc1aca14e8f9c67137dd5
@@ -195,11 +196,13 @@ extern/carma/extern/armadillo-code/.git/objects/4c/66280c45755c391e64f4cf82751b6
 extern/carma/extern/armadillo-code/.git/objects/51/b68df7f74fa8a9936caf3d4e4c77de3989d0a1
 extern/carma/extern/armadillo-code/.git/objects/54/e01c792919dbfb7d299fc10d8fba3cd8a8a4a6
 extern/carma/extern/armadillo-code/.git/objects/58/981df4ca79b12d3879bcf87313633f4b377667
+extern/carma/extern/armadillo-code/.git/objects/59/c74d3df697ff8ef1c5b1bcab7a76ef87d5ba02
 extern/carma/extern/armadillo-code/.git/objects/5b/1838b656f84e34576eb24a03f974bde3dd456b
 extern/carma/extern/armadillo-code/.git/objects/5c/5217e8a30a54b9be53d8d1632b43ef1d19d84c
 extern/carma/extern/armadillo-code/.git/objects/64/4f1e5b91e83add2382bb594174b69fe2b5cec8
 extern/carma/extern/armadillo-code/.git/objects/6e/61b821cbf2cf8da2048d9a6f36656705134051
 extern/carma/extern/armadillo-code/.git/objects/6f/b8a00dba7575cfbf3d5266603ecbbd2ae5fd15
+extern/carma/extern/armadillo-code/.git/objects/71/ded453f2855e567b2d62ad3878e60fb11d1466
 extern/carma/extern/armadillo-code/.git/objects/73/188753325f2f1e9a8acbd1b2d6eeba498f9132
 extern/carma/extern/armadillo-code/.git/objects/73/57f7bbd5f7d2c09c33303b77980c86684df3e8
 extern/carma/extern/armadillo-code/.git/objects/74/d4d49f887ff4c863b39cac7661bcea12c8933e
@@ -959,6 +962,7 @@ extern/carma/extern/armadillo-code/tests2/spcol.cpp
 extern/carma/extern/armadillo-code/tests2/spmat.cpp
 extern/carma/extern/armadillo-code/tests2/sprow.cpp
 extern/carma/extern/armadillo-code/tests2/spsubview.cpp
+extern/carma/extern/pybind11/.DS_Store
 extern/carma/extern/pybind11/.appveyor.yml
 extern/carma/extern/pybind11/.clang-format
 extern/carma/extern/pybind11/.clang-tidy
